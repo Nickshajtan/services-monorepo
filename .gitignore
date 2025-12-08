@@ -1,0 +1,63 @@
+# .gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editors
+.idea/
+.vscode/
+*.iml
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+dist/
+build/
+.cache/
+
+# PHP / Composer
+vendor/
+composer.lock
+.phpunit.result.cache
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+.envrc
+
+# Java / Gradle / Maven
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+.out/
+
+# Logs
+*.log
+logs/
+tmp/
+temp/
+
+# Coverage
+coverage/
+htmlcov/
+.clover
+.phpunit.cache/
+.nyc_output/
+lcov.info
+
+# Misc
+.sass-cache/
+.cache-loader/
