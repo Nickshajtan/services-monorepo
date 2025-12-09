@@ -4,7 +4,8 @@
   "description": "Monorepository for services polyglot system:",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "spdx:fix-all": "sh scripts/add-spdx-headers.sh --all"
   },
   "repository": {
     "type": "git",
