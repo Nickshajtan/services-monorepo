@@ -61,3 +61,6 @@ lcov.info
 # Misc
 .sass-cache/
 .cache-loader/
+
+# Husky
+.husky/_

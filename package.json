@@ -1,0 +1,24 @@
+{
+  "name": "services-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepository for services polyglot system:",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nickshajtan/services-monorepo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Nickshajtan/services-monorepo/issues"
+  },
+  "homepage": "https://github.com/Nickshajtan/services-monorepo#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
