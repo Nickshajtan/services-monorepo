@@ -27,9 +27,9 @@ esac
 
 # Running locally
 case "$commit_msg_lower" in
-  feat:*|fix:*|hotfix:*|test:*) ;;
+  feat:*|fix:*|hotfix:*|chore:*|test:*|docs:*|refactor:*) ;;
   *)
-    log_err "Commit message must start with 'feat:', 'fix:', 'test:', or 'hotfix:'"
+    log_err "Commit message must start with 'feat:', 'fix:', 'chore:', 'refactor:', 'test:', 'docs:' or 'hotfix:'"
     exit 1
     ;;
 esac
