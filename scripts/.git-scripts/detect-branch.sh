@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2025–present Mykyta Nosov
+
 
 # Declarations
 SCRIPT_DIR=$(dirname "$0")

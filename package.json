@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky install",
-    "spdx:fix-all": "sh scripts/add-spdx-headers.sh --all"
+    "spdx:fix-all": "bash ./scripts/.license/add-spdx-headers.sh --all"
   },
   "repository": {
     "type": "git",

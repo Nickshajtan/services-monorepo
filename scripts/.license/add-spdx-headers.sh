@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2025–present Mykyta Nosov
 
 # SPDX header template
 SPDX_LINE="SPDX-License-Identifier: AGPL-3.0-or-later"
@@ -56,7 +58,7 @@ is_text_file() {
 for file in $FILES; do
     [ ! -f "$file" ] && continue
     # skip binary
-    if ! is_text_file "$file"; then
+    if is_text_file "$file"; then
         continue
     fi
 
