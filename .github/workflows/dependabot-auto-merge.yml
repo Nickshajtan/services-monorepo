@@ -9,11 +9,62 @@ permissions:
   contents: write
 
 jobs:
-  automerge:
+  label-and-automerge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' && contains(github.event.pull_request.labels.*.name, 'auto-merge')
+    if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Auto-merge Dependabot PR
+      - name: Detect semver update level from title
+        id: semver
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          echo "Title: $TITLE"
+
+          LEVEL="unknown"
+          if [[ "$TITLE" =~ from[[:space:]]([0-9]+)\.([0-9]+)\.([0-9]+)[[:space:]]to[[:space:]]([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            FROM_MAJOR="${BASH_REMATCH[1]}"
+            FROM_MINOR="${BASH_REMATCH[2]}"
+            FROM_PATCH="${BASH_REMATCH[3]}"
+            TO_MAJOR="${BASH_REMATCH[4]}"
+            TO_MINOR="${BASH_REMATCH[5]}"
+            TO_PATCH="${BASH_REMATCH[6]}"
+
+            if [[ "$TO_MAJOR" != "$FROM_MAJOR" ]]; then
+              LEVEL="major"
+            elif [[ "$TO_MINOR" != "$FROM_MINOR" ]]; then
+              LEVEL="minor"
+            elif [[ "$TO_PATCH" != "$FROM_PATCH" ]]; then
+              LEVEL="patch"
+            fi
+          fi
+
+          echo "Detected level: $LEVEL"
+          echo "level=$LEVEL" >> "$GITHUB_OUTPUT"
+
+      - name: Add 'dependencies' label to all Dependabot PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['dependencies']
+            });
+
+      - name: Add 'auto-merge' for safe updates (minor/patch only)
+        if: steps.semver.outputs.level == 'minor' || steps.semver.outputs.level == 'patch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['auto-merge']
+            });
+
+      - name: Auto-merge Dependabot PR (minor/patch only)
+        if: steps.semver.outputs.level == 'minor' || steps.semver.outputs.level == 'patch'
         uses: pascalgn/automerge-action@v0.16.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
