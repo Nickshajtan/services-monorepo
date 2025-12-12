@@ -1,0 +1,35 @@
+name: Branch and Commit Validation
+
+on:
+  push:
+    branches:
+      - '**'
+    branches-ignore:
+      - 'main'
+      - 'staging'
+      - 'develop'
+      - 'prelaunch'
+      - 'production'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Validate branch name
+      run: |
+        echo "Validating branch name..."
+        bash ./scripts/.git-scripts/validate-branch.sh
+
+    - name: Validate commit messages
+      run: |
+        echo "Validating commit names..."
+        commits=$(git log --oneline --no-merges)
+        while IFS= read -r commit; do
+          commit_msg=$(echo "$commit" | cut -d' ' -f2-)
+          echo $commit_msg
+          bash ./scripts/.git-scripts/validate-commit.sh "$commit_msg"
+        done <<< "$commits"
