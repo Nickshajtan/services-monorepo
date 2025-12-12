@@ -2,8 +2,6 @@ name: Branch and Commit Validation
 
 on:
   push:
-    branches:
-      - '**'
     branches-ignore:
       - 'main'
       - 'staging'
