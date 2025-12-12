@@ -1,0 +1,33 @@
+name: Sync labels
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - ".github/labels.json"
+      - ".github/scripts/infrastructure/sync-labels.js"
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: |
+          npm init -y
+          npm install node-fetch@2
+
+      - name: Sync labels
+        env:
+          GITHUB_TOKEN: ${{ secrets.LABELS_TOKEN || secrets.GITHUB_TOKEN }}
+          DELETE_EXTRA_LABELS: "false"
+        run: |
+          node .github/scripts/sync-labels.js

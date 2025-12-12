@@ -1,0 +1,42 @@
+[
+  {
+    "name": "dependencies",
+    "color": "0366d6",
+    "description": "Dependency updates"
+  },
+  {
+    "name": "security",
+    "color": "b60205",
+    "description": "Security-related changes"
+  },
+  {
+    "name": "auto-merge",
+    "color": "0e8a16",
+    "description": "Safe to auto-merge"
+  },
+  {
+    "name": "php",
+    "color": "6f42c1",
+    "description": "Changes related to PHP / Composer"
+  },
+  {
+    "name": "js",
+    "color": "f1e05a",
+    "description": "Changes related to JS / npm"
+  },
+  {
+    "name": "go",
+    "color": "00ADD8",
+    "description": "Changes related to Go modules"
+  },
+  {
+    "name": "java",
+    "color": "b07219",
+    "description": "Changes related to Java / JVM"
+  },
+  {
+    "name": "python",
+    "color": "d93f0b",
+    "description": "Changes related to Python"
+  }
+]
