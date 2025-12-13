@@ -21,14 +21,20 @@ jobs:
     - name: Validate branch name
       env:
         BRANCH_NAME: ${{ github.ref_name }}
+        GITHUB_ACTOR: ${{ github.actor }}
       run: |
         echo "Validating branch name..."
         bash ./scripts/.git-scripts/validate-branch.sh
 
     - name: Validate commit messages
+      env:
+        BEFORE_SHA: ${{ github.event.before }}
+        CURRENT_SHA: ${{ github.sha }}
+        BRANCH_NAME: ${{ github.ref_name }}
+        GITHUB_ACTOR: ${{ github.actor }}
       run: |
         echo "Validating commit names..."
-        commits=$(git log --oneline --no-merges)
+        commits=$(git log --format=%s --no-merges "$BEFORE_SHA..$CURRENT_SHA")
         while IFS= read -r commit; do
           commit_msg=$(echo "$commit" | cut -d' ' -f2-)
           echo $commit_msg
