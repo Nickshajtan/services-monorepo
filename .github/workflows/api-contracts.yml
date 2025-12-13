@@ -1,0 +1,38 @@
+name: API Contracts
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'contracts/**'
+      - 'scripts/tools/api-tooling/**'
+      - '.github/workflows/api-contracts.yml'
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'scripts/tools/api-tooling/**'
+      - '.github/workflows/api-contracts.yml'
+
+jobs:
+  lint-and-bundle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies for api-tooling
+        run: |
+          cd tools/api-tooling
+          npm ci
+
+      - name: Lint OpenAPI contracts
+        run: npm run api:lint
+
+      - name: Bundle OpenAPI contracts
+        run: npm run api:bundle
