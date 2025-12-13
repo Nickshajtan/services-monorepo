@@ -1,6 +1,9 @@
 {
   "name": "api-tooling",
   "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,13 +13,18 @@
     "webhooks:bundle": "redocly bundle ../../../contracts/webhooks/webhooks.yaml -o ../../../contracts/dist/openapi-webhooks.yaml",
     "rest:gen:php": "openapi-generator-cli generate -c openapi-config/php-client.yml",
     "graphql:lint": "graphql-codegen --config openapi-config/graphql-codegen.yml --dry-run",
-    "graphql:gen": "graphql-codegen --config openapi-config/graphql-codegen.yml"
+    "graphql:gen": "graphql-codegen --config openapi-config/graphql-codegen.yml",
+    "async:lint": "asyncapi validate ../../../contracts/async/events.yaml",
+    "async:docs": "asyncapi generate fromTemplate ../../../contracts/async/events.yaml @asyncapi/html-template -o ../../../contracts/dist/async-events-docs",
+    "rest:docs": "redocly build-docs ../../../contracts/dist/openapi-public.yaml -o ../../../contracts/dist/docs/rest.html",
+    "webhooks:docs": "redocly build-docs ../../../contracts/dist/openapi-webhooks.yaml -o ../../../contracts/dist/docs/webhooks.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@asyncapi/cli": "^4.1.1",
     "@graphql-codegen/cli": "^6.1.0",
     "@graphql-codegen/typescript": "^5.0.6",
     "@graphql-codegen/typescript-operations": "^5.0.6",
