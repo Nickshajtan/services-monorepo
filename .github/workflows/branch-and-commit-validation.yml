@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Validate branch name
       env:
@@ -35,8 +37,24 @@ jobs:
       run: |
         echo "Validating commit names..."
         commits=$(git log --format=%s --no-merges "$BEFORE_SHA..$CURRENT_SHA")
-        while IFS= read -r commit; do
-          commit_msg=$(echo "$commit" | cut -d' ' -f2-)
-          echo $commit_msg
+
+        if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+          echo "No valid BEFORE_SHA, using single commit $CURRENT_SHA"
+          commits=$(git log --format=%s --no-merges -1 "$CURRENT_SHA")
+        else
+          if git merge-base --is-ancestor "$BEFORE_SHA" "$CURRENT_SHA"; then
+            commits=$(git log --format=%s --no-merges "$BEFORE_SHA..$CURRENT_SHA")
+          else
+            echo "BEFORE_SHA is not an ancestor of CURRENT_SHA, falling back to single commit"
+            commits=$(git log --format=%s --no-merges -1 "$CURRENT_SHA")
+          fi
+        fi
+
+        echo "Commits to validate:"
+        echo "$commits"
+
+        while IFS= read -r commit_msg; do
+          [ -z "$commit_msg" ] && continue
+          echo "Checking: $commit_msg"
           bash ./scripts/.git-scripts/validate-commit.sh "$commit_msg"
         done <<< "$commits"
