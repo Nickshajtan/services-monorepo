@@ -24,7 +24,8 @@ jobs:
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
+          cache: 'yarn'
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
@@ -35,18 +36,72 @@ jobs:
       - name: Install dependencies for api-tooling
         run: |
           cd scripts/tools/api-tooling
-          npm ci
+          yarn install --frozen-lockfile
 
       - name: Lint OpenAPI contracts
-        run: npm run api:lint
+        run: yarn api:lint
 
       - name: Bundle OpenAPI contracts
-        run: npm run api:bundle
+        run: yarn api:bundle
 
       - name: Generate PHP client from OpenAPI
         if: github.ref == 'refs/heads/main'
-        run: npm run api:gen:php
+        run: yarn api:gen:php
 
       - name: Generate GraphQL TS types
         if: github.ref == 'refs/heads/main'
-        run: npm run api:gen:graphql
+        run: yarn api:gen:graphql
+
+  breaking-changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          path: pr
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (base)
+        run: |
+          cd base/scripts/tools/api-tooling
+          yarn install --frozen-lockfile
+
+      - name: Bundle OpenAPI (base)
+        run: |
+          cd base
+          yarn api:bundle
+
+      - name: Install dependencies (PR)
+        run: |
+          cd pr/scripts/tools/api-tooling
+          yarn install --frozen-lockfile
+
+      - name: Bundle OpenAPI (PR)
+        run: |
+          cd pr
+          yarn api:bundle
+
+      - name: Check REST OpenAPI breaking changes
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/work openapitools/openapi-diff:latest \
+            /work/base/contracts/dist/openapi-public.yaml \
+            /work/pr/contracts/dist/openapi-public.yaml
+
+      - name: Check Webhooks OpenAPI breaking changes
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/work openapitools/openapi-diff:latest \
+            /work/base/contracts/dist/openapi-webhooks.yaml \
+            /work/pr/contracts/dist/openapi-webhooks.yaml

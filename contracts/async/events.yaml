@@ -1,0 +1,24 @@
+asyncapi: 2.6.0
+info:
+  title: Monorepo Internal Events
+  version: 0.1.0
+defaultContentType: application/json
+
+channels:
+  health.changed:
+    description: Emitted when service health status changes.
+    subscribe:
+      summary: Consumers subscribe to health change events
+      message:
+        $ref: '#/components/messages/HealthChanged'
+
+components:
+  messages:
+    HealthChanged:
+      name: HealthChanged
+      title: Health status changed
+      summary: |
+        Same payload as REST /health and health webhook.
+      contentType: application/json
+      payload:
+        $ref: '../components/schemas/Health.yaml'
