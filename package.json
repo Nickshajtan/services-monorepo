@@ -12,9 +12,7 @@
     "api:lint": "cd scripts/tools/api-tooling && yarn rest:lint && yarn webhooks:lint",
     "api:bundle": "cd scripts/tools/api-tooling && yarn rest:bundle && yarn webhooks:bundle",
     "api:gen:php": "cd scripts/tools/api-tooling && yarn rest:gen:php",
-    "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen",
-    "api:docs:async": "cd scripts/tools/api-tooling && yarn async:docs",
-    "api:docs": "yarn api:bundle && cd scripts/tools/api-tooling && yarn rest:docs && yarn webhooks:docs"
+    "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen"
   },
   "repository": {
     "type": "git",
