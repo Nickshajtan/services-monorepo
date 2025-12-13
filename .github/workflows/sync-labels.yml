@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync labels
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DELETE_EXTRA_LABELS: "false"
         run: |
           node ./scripts/infrastructure/sync-labels.js
