@@ -18,7 +18,14 @@ case "$BRANCH_NAME" in
   exit 0 ;;
 esac
 
-commit_msg_lower=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+COMMIT_MSG_FILE="$1"
+if [ ! -f "$COMMIT_MSG_FILE" ]; then
+  log_err "Cannot read commit message file"
+  exit 1
+fi
+
+COMMIT_MSG="$(head -n 1 "$COMMIT_MSG_FILE")"
+commit_msg_lower=$(printf '%s' "$COMMIT_MSG" | tr '[:upper:]' '[:lower:]')
 
 # Running in GitHub Actions, so skip if merging
 case "$commit_msg_lower" in
