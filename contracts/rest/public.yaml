@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: HCC Services Platform Public API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
