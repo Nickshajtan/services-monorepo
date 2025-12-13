@@ -4,11 +4,20 @@
 
 
 # Declarations
-ROOT_DIR="$(git rev-parse --show-toplevel)"
+ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 SCRIPTS_DIR="$ROOT_DIR/scripts"
 source "$SCRIPTS_DIR/utils/colored-text.sh"
 source "$SCRIPTS_DIR/.git-scripts/detect-branch.sh"
-detect_branch BRANCH_NAME
+
+if [ -z "$BRANCH_NAME" ]; then
+  detect_branch BRANCH_NAME
+fi
+
+# Skip bots safely — only if variable exists AND equals dependabot[bot]
+if [ -n "${GITHUB_ACTOR:-}" ] && [ "$GITHUB_ACTOR" = "dependabot[bot]" ]; then
+  log_warn "Skipping validation for Dependabot commit..."
+  exit 0
+fi
 
 log_info "Commit validation started..."
 
