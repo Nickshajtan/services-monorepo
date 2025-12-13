@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "rest:lint": "redocly lint ../../../contracts/rest/public.yaml",
-    "rest:bundle": "redocly bundle ../../../contracts/rest/public.yaml -o ../../../contracts/dist/openapi-public.yaml"
+    "webhooks:lint": "redocly lint ../../contracts/webhooks/webhooks.yaml",
+    "rest:bundle": "redocly bundle ../../../contracts/rest/public.yaml -o ../../../contracts/dist/openapi-public.yaml",
+    "webhooks:bundle": "redocly bundle ../../../contracts/webhooks/webhooks.yaml -o ../../../contracts/dist/openapi-webhooks.yaml",
+    "rest:gen:php": "openapi-generator-cli generate -c openapi-config/php-client.yml"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.25.2",
     "@redocly/cli": "^2.12.6"
   }
 }
