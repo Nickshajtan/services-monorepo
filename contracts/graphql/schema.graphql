@@ -2,6 +2,10 @@ schema {
   query: Query
 }
 
+type Query {
+  health: Health!
+}
+
 type Health {
   status: String!
 }

@@ -46,3 +46,7 @@ jobs:
       - name: Generate PHP client from OpenAPI
         if: github.ref == 'refs/heads/main'
         run: npm run api:gen:php
+
+      - name: Generate GraphQL TS types
+        if: github.ref == 'refs/heads/main'
+        run: npm run api:gen:graphql
