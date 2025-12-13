@@ -29,7 +29,7 @@ commit_msg_lower=$(printf '%s' "$COMMIT_MSG" | tr '[:upper:]' '[:lower:]')
 
 # Running in GitHub Actions, so skip if merging
 case "$commit_msg_lower" in
-  merge:*|rebase:*) exit 0 ;;
+  merge*|rebase*) exit 0 ;;
 esac
 
 # Running locally

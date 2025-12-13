@@ -1,6 +1,7 @@
 name: Branch and Commit Validation
 
 on:
+  workflow_dispatch: {}
   push:
     branches-ignore:
       - 'main'
@@ -15,9 +16,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v6
 
     - name: Validate branch name
+      env:
+        BRANCH_NAME: ${{ github.ref_name }}
       run: |
         echo "Validating branch name..."
         bash ./scripts/.git-scripts/validate-branch.sh
