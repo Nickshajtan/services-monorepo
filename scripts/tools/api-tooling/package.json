@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "rest:lint": "redocly lint ../../../contracts/rest/public.yaml",
+    "rest:bundle": "redocly bundle ../../../contracts/rest/public.yaml -o ../../../contracts/dist/openapi-public.yaml"
   },
   "keywords": [],
   "author": "",
