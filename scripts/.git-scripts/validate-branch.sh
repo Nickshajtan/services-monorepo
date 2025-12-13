@@ -8,7 +8,10 @@ ROOT_DIR="$(git rev-parse --show-toplevel)"
 SCRIPTS_DIR="$ROOT_DIR/scripts"
 source "$SCRIPTS_DIR/utils/colored-text.sh"
 source "$SCRIPTS_DIR/.git-scripts/detect-branch.sh"
-detect_branch BRANCH_NAME
+
+if [ -z "$BRANCH_NAME" ]; then
+  detect_branch BRANCH_NAME
+fi
 
 log_info "Branch name to validation '$BRANCH_NAME'"
 log_info "Branch validation started..."
