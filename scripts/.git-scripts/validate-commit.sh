@@ -19,6 +19,13 @@ if [ -n "${GITHUB_ACTOR:-}" ] && [ "$GITHUB_ACTOR" = "dependabot[bot]" ]; then
   exit 0
 fi
 
+COMMIT_ARG="$1"
+if [ -z "$COMMIT_ARG" ]; then
+  log_err "No commit message or file path provided"
+  exit 1
+fi
+
+COMMIT_MSG=""
 log_info "Commit validation started..."
 
 case "$BRANCH_NAME" in
@@ -27,13 +34,14 @@ case "$BRANCH_NAME" in
   exit 0 ;;
 esac
 
-COMMIT_MSG_FILE="$1"
-if [ ! -f "$COMMIT_MSG_FILE" ]; then
-  log_err "Cannot read commit message file"
-  exit 1
+if [ -f "$COMMIT_ARG" ]; then
+  # commit-msg hook: $1 = path to the commit message file
+  COMMIT_MSG="$(head -n 1 "$COMMIT_ARG")"
+else
+  # CI: $1 = commit message text
+  COMMIT_MSG="$COMMIT_ARG"
 fi
 
-COMMIT_MSG="$(head -n 1 "$COMMIT_MSG_FILE")"
 commit_msg_lower=$(printf '%s' "$COMMIT_MSG" | tr '[:upper:]' '[:lower:]')
 
 # Running in GitHub Actions, so skip if merging
