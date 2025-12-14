@@ -4,4 +4,4 @@ dist
 build
 coverage
 .yarn
-./contracts/docs/assets
+contracts/docs/assets

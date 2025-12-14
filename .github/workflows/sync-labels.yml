@@ -4,8 +4,8 @@ on:
   workflow_dispatch: {}
   push:
     paths:
-      - ".github/labels.json"
-      - "./scripts/infrastructure/sync-labels.cjs"
+      - '.github/labels.json'
+      - './scripts/infrastructure/sync-labels.cjs'
 
 jobs:
   sync-labels:
@@ -31,6 +31,6 @@ jobs:
       - name: Sync labels
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DELETE_EXTRA_LABELS: "false"
+          DELETE_EXTRA_LABELS: 'false'
         run: |
           node ./scripts/infrastructure/sync-labels.cjs

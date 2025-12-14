@@ -1,11 +1,11 @@
 schema {
-  query: Query
+    query: Query
 }
 
 type Query {
-  health: Health!
+    health: Health!
 }
 
 type Health {
-  status: String!
+    status: String!
 }

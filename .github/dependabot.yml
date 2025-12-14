@@ -2,60 +2,60 @@ version: 2
 
 updates:
   # Composer dependencies
-  - package-ecosystem: "composer"
-    directory: "/"
+  - package-ecosystem: 'composer'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
     labels:
-      - "php"
-      - "dependencies"
+      - 'php'
+      - 'dependencies'
     commit-message:
-      prefix: "deps"
+      prefix: 'deps'
     groups:
       composer-non-major:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       composer-major:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "major"
+          - 'major'
 
   # npm packages
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
     labels:
-      - "js"
-      - "dependencies"
+      - 'js'
+      - 'dependencies'
     groups:
       npm-non-major:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       npm-major:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "major"
+          - 'major'
     commit-message:
-      prefix: "deps"
+      prefix: 'deps'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
     labels:
-      - "dependencies"
+      - 'dependencies'
     commit-message:
-      prefix: "ci"
+      prefix: 'ci'

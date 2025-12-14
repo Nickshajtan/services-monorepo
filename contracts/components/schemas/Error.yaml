@@ -17,11 +17,11 @@ properties:
 
   traceId:
     type: string
-    example: "aa9e38df77bc11ef8e030242ac120002"
+    example: 'aa9e38df77bc11ef8e030242ac120002'
 
   details:
     type: object
     nullable: true
     additionalProperties: true
     example:
-      userId: "123"
+      userId: '123'

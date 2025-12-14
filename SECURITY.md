@@ -12,7 +12,7 @@ This is an evolving monorepo and does not yet have formal, tagged releases.
 
 Until a stable `v1.0.0` is published:
 
-- Only the **`main`** branch is considered *actively maintained*.
+- Only the **`main`** branch is considered _actively maintained_.
 - Any security fix will typically be applied to `main` and may later be included in tagged releases when versioning is introduced.
 - Experimental / feature branches are **not** covered by this policy.
 
