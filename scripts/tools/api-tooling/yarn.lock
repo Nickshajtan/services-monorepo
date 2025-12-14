@@ -407,7 +407,7 @@
     ramldt2jsonschema "^1.2.3"
     webapi-parser "^0.5.0"
 
-"@asyncapi/react-component@^2.5.0", "@asyncapi/react-component@^2.6.5":
+"@asyncapi/react-component@^2.5.0":
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/@asyncapi/react-component/-/react-component-2.6.5.tgz#399bd249bfafd87ed1285540ee91394f93f1ca4a"
   integrity sha512-+kQyIc337MHGTQ1ZYEuY2vfCyii2J/3o3Pm5/oJFgzWs9jWIz7/momLFl6rsS7Yd7elBam9Ukw0F3oM1AwwyHQ==
@@ -480,16 +480,6 @@
     tippy.js "^6.3.7"
     typescript "5.1.6"
     zustand "^4.5.2"
-
-"@asyncapi/web-component@^2.6.5":
-  version "2.6.5"
-  resolved "https://registry.yarnpkg.com/@asyncapi/web-component/-/web-component-2.6.5.tgz#822d1fd6cf67d2abd25b0e7f34b5bb21be7e20bc"
-  integrity sha512-9diOqm9db475WJIBfLijnb+ZHuw1wxxl9W2Ksa6Xy37j1+Um+jusVfyie7UdPBi4Y08yKCCe8DdFT7VJv/g/nA==
-  dependencies:
-    "@asyncapi/react-component" "^2.6.5"
-    react "^18.2.0"
-    react-dom "^18.2.0"
-    web-react-components "^1.4.2"
 
 "@aws-crypto/crc32@5.2.0":
   version "5.2.0"
@@ -12223,14 +12213,6 @@ react-dom@18.2.0:
   dependencies:
     scheduler "^0.27.0"
 
-react-dom@^18.2.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
-  integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.23.2"
-
 react-error-boundary@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-4.1.2.tgz#bc750ad962edb8b135d6ae922c046051eb58f289"
@@ -12287,13 +12269,6 @@ react@^17.0.1:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-
-react@^18.2.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
-  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 reactflow@^11.2.0:
   version "11.11.4"
@@ -12779,7 +12754,7 @@ saxes@^6.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@^0.23.0, scheduler@^0.23.2:
+scheduler@^0.23.0:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
   integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
@@ -14318,11 +14293,6 @@ wcwidth@>=1.0.1, wcwidth@^1.0.1:
   integrity sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==
   dependencies:
     defaults "^1.0.3"
-
-web-react-components@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/web-react-components/-/web-react-components-1.4.2.tgz#505b410f0a573d8180235d7aea4e059be6ee2ec2"
-  integrity sha512-//n/7TFHJHSrfDKguLN3kdJHDezQJpStwU6b751up6Nsax5Ry+GpRHsxmpc+BO2TarzakTxLwowvmWiyIbBHbw==
 
 web-streams-polyfill@^3.0.3:
   version "3.3.3"

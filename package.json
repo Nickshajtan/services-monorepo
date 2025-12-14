@@ -11,6 +11,7 @@
     "spdx:fix-all": "bash ./scripts/.license/add-spdx-headers.sh --all",
     "api:lint": "cd scripts/tools/api-tooling && yarn rest:lint && yarn webhooks:lint",
     "api:bundle": "cd scripts/tools/api-tooling && yarn rest:bundle && yarn webhooks:bundle",
+    "api:async:lint": "cd scripts/tools/api-tooling && yarn async:lint",
     "api:async:bundle": "cd scripts/tools/api-tooling && yarn async:bundle",
     "api:gen:php": "cd scripts/tools/api-tooling && yarn rest:gen:php",
     "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen"
