@@ -41,7 +41,7 @@ jobs:
           echo "level=$LEVEL" >> "$GITHUB_OUTPUT"
 
       - name: Add 'dependencies' label to all Dependabot PRs
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.issues.addLabels({
@@ -53,7 +53,7 @@ jobs:
 
       - name: Add 'auto-merge' for safe updates (minor/patch only)
         if: steps.semver.outputs.level == 'minor' || steps.semver.outputs.level == 'patch'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.issues.addLabels({
