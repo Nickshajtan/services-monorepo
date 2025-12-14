@@ -14,7 +14,13 @@
     "api:async:lint": "cd scripts/tools/api-tooling && yarn async:lint",
     "api:async:bundle": "cd scripts/tools/api-tooling && yarn async:bundle",
     "api:gen:php": "cd scripts/tools/api-tooling && yarn rest:gen:php",
-    "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen"
+    "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen",
+    "lint:eslint": "eslint .",
+    "lint:eslint:fix": "eslint . --fix",
+    "format:prettier": "prettier . --write",
+    "format:prettier:check": "prettier . --check",
+    "lint": "yarn lint:eslint && yarn format:prettier:check",
+    "lint:fix": "yarn lint:eslint:fix && yarn format:prettier"
   },
   "repository": {
     "type": "git",
@@ -43,7 +49,10 @@
     "node-fetch": "^3.3.2"
   },
   "lint-staged": {
-    "**/*.{js,mjs,cjs,json,md,yml,yaml}": [
+    "**/*.{js,mjs,cjs}": [
+      "eslint --fix"
+    ],
+    "**/*.{js,mjs,cjs,json,md,yml,yaml,html,css,scss,graphql,gql}": [
       "prettier --write"
     ],
     "**/*.sh": [
