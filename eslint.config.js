@@ -44,4 +44,10 @@ export default [
       "no-console": "off",
     },
   },
+  {
+    files: ["packages/**/**/*.{js,jsx}"],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
+  }
 ];
