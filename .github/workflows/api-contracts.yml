@@ -93,7 +93,7 @@ jobs:
       - name: Bundle AsyncAPI (base)
         run: |
           cd base
-          yarn async:bundle
+          yarn api:async:bundle
 
       - name: Install dependencies (PR)
         run: |
@@ -108,7 +108,7 @@ jobs:
       - name: Bundle AsyncAPI (PR)
         run: |
           cd base
-          yarn async:bundle
+          yarn api:async:bundle
 
       - name: Check REST OpenAPI breaking changes
         run: |
