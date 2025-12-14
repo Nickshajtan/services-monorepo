@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - ".github/labels.json"
-      - "./scripts/infrastructure/sync-labels.js"
+      - "./scripts/infrastructure/sync-labels.cjs"
 
 jobs:
   sync-labels:
@@ -33,4 +33,4 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DELETE_EXTRA_LABELS: "false"
         run: |
-          node ./scripts/infrastructure/sync-labels.js
+          node ./scripts/infrastructure/sync-labels.cjs

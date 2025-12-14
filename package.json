@@ -29,8 +29,13 @@
   },
   "homepage": "https://github.com/Nickshajtan/services-monorepo#readme",
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
     "yaml": "^2.8.2"
   },
   "dependencies": {
@@ -38,6 +43,9 @@
     "node-fetch": "^3.3.2"
   },
   "lint-staged": {
+    "**/*.{js,mjs,cjs,json,md,yml,yaml}": [
+      "prettier --write"
+    ],
     "**/*.sh": [
       "bash -n"
     ]

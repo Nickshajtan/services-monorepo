@@ -124,6 +124,6 @@ jobs:
 
       - name: Check AsyncAPI breaking changes
         run: |
-          node pr/scripts/tools/api-tooling/check-async-breaking.js \
+          node pr/scripts/tools/api-tooling/check-async-breaking.cjs \
             base/contracts/async/events.yaml \
             pr/contracts/async/events.yaml
