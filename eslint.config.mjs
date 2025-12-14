@@ -11,6 +11,7 @@ export default [
             '**/.next/**',
             '**/coverage/**',
             '**/.yarn/**',
+            './contracts/docs',
         ],
     },
     js.configs.recommended,
