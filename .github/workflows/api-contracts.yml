@@ -41,8 +41,14 @@ jobs:
       - name: Lint OpenAPI contracts
         run: yarn api:lint
 
+      - name: Lint API contracts
+        run: yarn api:async:lint
+
       - name: Bundle OpenAPI contracts
         run: yarn api:bundle
+
+      - name: Bundle API contracts
+        run: yarn api:async:bundle
 
       - name: Generate PHP client from OpenAPI
         if: github.ref == 'refs/heads/main'
@@ -84,6 +90,11 @@ jobs:
           cd base
           yarn api:bundle
 
+      - name: Bundle AsyncAPI (base)
+        run: |
+          cd base
+          yarn async:bundle
+
       - name: Install dependencies (PR)
         run: |
           cd pr/scripts/tools/api-tooling
@@ -93,6 +104,11 @@ jobs:
         run: |
           cd pr
           yarn api:bundle
+
+      - name: Bundle AsyncAPI (PR)
+        run: |
+          cd base
+          yarn async:bundle
 
       - name: Check REST OpenAPI breaking changes
         run: |
@@ -105,3 +121,9 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/work openapitools/openapi-diff:latest \
             /work/base/contracts/dist/openapi-webhooks.yaml \
             /work/pr/contracts/dist/openapi-webhooks.yaml
+
+      - name: Check AsyncAPI breaking changes
+        run: |
+          node pr/scripts/tools/api-tooling/check-async-breaking.js \
+            base/contracts/async/events.yaml \
+            pr/contracts/async/events.yaml
