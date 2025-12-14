@@ -10,8 +10,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  administration: write
 
 jobs:
   sync-branch-protection:
@@ -54,6 +52,6 @@ jobs:
 
       - name: Sync branch protection
         env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.BRANCH_ADMIN_TOKEN }}
         run: |
           node scripts/infrastructure/sync-branch-protection.cjs
