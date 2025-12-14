@@ -1,0 +1,11 @@
+generatorName: php
+inputSpec: ../../../contracts/dist/openapi-public.yaml
+outputDir: ../../../contracts/dist/generated/php-client
+
+additionalProperties:
+  packageName: MonorepoApiClient
+  invokerPackage: Monorepo\ApiClient
+  srcBasePath: src
+  composerPackageName: hcc/monorepo-api-client
+  useGuzzle: true
+  withNullable: true

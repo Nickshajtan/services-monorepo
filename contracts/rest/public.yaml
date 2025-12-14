@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: HCC Services Platform Public API
+  version: 0.1.0
+  license:
+    name: Proprietary
+    url: https://your-domain.tld/legal/api-license
+servers:
+  - url: https://api.your-domain.tld
+
+paths:
+  /health:
+    $ref: './paths/health.yaml'
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      $ref: '../components/schemas/Error.yaml'
+    Health:
+      $ref: '../components/schemas/Health.yaml'

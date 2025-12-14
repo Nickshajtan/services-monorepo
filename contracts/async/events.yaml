@@ -1,0 +1,35 @@
+asyncapi: 3.0.0
+id: urn:monorepo:internal-events
+
+info:
+  title: Monorepo Internal Events
+  version: 0.1.0
+  description: Internal domain events published in the monorepo.
+  contact:
+    name: Platform Team
+    email: platform@example.com
+    url: https://example.com/platform
+  license:
+    name: Proprietary
+  tags:
+    - name: internal
+      description: Internal events
+
+defaultContentType: application/json
+
+channels:
+  health.changed:
+    address: health.changed
+    description: Emitted when service health status changes.
+    messages:
+      healthChanged:
+        $ref: '#/components/messages/HealthChanged'
+
+components:
+  messages:
+    HealthChanged:
+      title: Health status changed
+      summary: Same payload as REST /health and health webhook.
+      contentType: application/json
+      payload:
+        $ref: '../components/schemas/Health.yaml'

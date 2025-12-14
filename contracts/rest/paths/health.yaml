@@ -1,0 +1,23 @@
+get:
+  summary: Health check
+  operationId: getHealth
+  security: []
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Health.yaml'
+    '503':
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '../public.yaml#/components/schemas/Error'
+    '429':
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '../public.yaml#/components/schemas/Error'

@@ -1,11 +1,20 @@
 {
   "name": "services-monorepo",
   "version": "1.0.0",
-  "description": "Monorepository for services polyglot system:",
+  "engines": {
+    "node": "22.x"
+  },
+  "description": "Monorepo for services polyglot system",
   "main": "index.js",
   "scripts": {
     "prepare": "husky install",
-    "spdx:fix-all": "bash ./scripts/.license/add-spdx-headers.sh --all"
+    "spdx:fix-all": "bash ./scripts/.license/add-spdx-headers.sh --all",
+    "api:lint": "cd scripts/tools/api-tooling && yarn rest:lint && yarn webhooks:lint",
+    "api:bundle": "cd scripts/tools/api-tooling && yarn rest:bundle && yarn webhooks:bundle",
+    "api:async:lint": "cd scripts/tools/api-tooling && yarn async:lint",
+    "api:async:bundle": "cd scripts/tools/api-tooling && yarn async:bundle",
+    "api:gen:php": "cd scripts/tools/api-tooling && yarn rest:gen:php",
+    "api:gen:graphql": "cd scripts/tools/api-tooling && yarn graphql:gen"
   },
   "repository": {
     "type": "git",
@@ -20,7 +29,8 @@
   },
   "homepage": "https://github.com/Nickshajtan/services-monorepo#readme",
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "yaml": "^2.8.2"
   },
   "dependencies": {
     "kleur": "^4.1.5",

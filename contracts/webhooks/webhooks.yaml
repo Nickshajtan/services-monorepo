@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: Webhooks for My Monorepo
+  version: 0.1.0
+  license:
+    name: Proprietary
+    url: https://your-domain.tld/legal/api-license
+
+servers:
+  - url: https://api.your-domain.tld
+
+security:
+  - bearerAuth: []
+
+paths:
+  /webhooks/health:
+    post:
+      summary: Receive health status notifications
+      operationId: getHealth
+      description: |
+        This describes the webhook request that **our system** will send to **your** endpoint
+        when health status changes.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Health.yaml'
+      responses:
+        '200':
+          description: Successfully processed
+        '204':
+          description: Successfully processed (no content)
+        '503':
+          description: Service unavailable
+        '429':
+          description: Too many requests
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

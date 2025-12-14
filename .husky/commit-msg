@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sh scripts/hooks/commit-msg.sh "$1"
