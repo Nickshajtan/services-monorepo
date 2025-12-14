@@ -22,7 +22,6 @@ channels:
     address: health.changed
     description: Emitted when service health status changes.
     messages:
-      # ⬇️ ОЦЕ і є message id у v3 (ключ повідомлення)
       healthChanged:
         $ref: '#/components/messages/HealthChanged'
 

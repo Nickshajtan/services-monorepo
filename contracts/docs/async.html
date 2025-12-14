@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>AsyncAPI docs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../../scripts/tools/api-tooling/node_modules/@asyncapi/web-component/lib/asyncapi-web-component.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        asyncapi-component {
+            height: 100vh;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<asyncapi-component schemaUrl="../dist/async-events.yaml" show="sidebar" theme="light"></asyncapi-component>
+</body>
+</html>
