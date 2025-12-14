@@ -6,4 +6,4 @@
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 SCRIPTS_DIR="$ROOT_DIR/scripts"
 
-. "$SCRIPTS_DIR/.license/add-spdx-headers.sh"
+. "$SCRIPTS_DIR/.git-scripts/validate-branch.sh"
