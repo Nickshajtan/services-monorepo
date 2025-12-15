@@ -29,7 +29,7 @@ COMMIT_MSG=""
 log_info "Commit validation started..."
 
 case "$BRANCH_NAME" in
-  init|main|staging|production|prelaunch|develop)
+  init|main|staging|production|prelaunch|develop|dependabot/*)
   log_warn "Skipping validation for '$BRANCH_NAME' branch..."
   exit 0 ;;
 esac

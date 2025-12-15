@@ -12,9 +12,12 @@ on:
 
 jobs:
   validate:
-    if: github.actor != 'dependabot[bot]'
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender.login != 'dependabot[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      github.event.sender.login != 'github-actions[bot]'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
