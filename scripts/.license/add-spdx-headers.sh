@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2025–present Mykyta Nosov
 
@@ -10,6 +10,16 @@ COPYRIGHT_LINE="Copyright (c) 2025–present Mykyta Nosov"
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 SCRIPTS_DIR="$ROOT_DIR/scripts"
 . "$SCRIPTS_DIR/utils/colored-text.sh"
+IGNORE_DIRS="
+node_modules
+vendor
+dist
+build
+coverage
+.cache
+.git
+contracts/docs/assets
+"
 MODE="staged"
 
 # check CLI param
@@ -24,15 +34,32 @@ else
   FILES=$(git ls-files)
 fi
 
+FILTERED_FILES=()
+for file in $FILES; do
+    skip=false
+    for dir in $IGNORE_DIRS; do
+        case "$file" in
+            "$dir"/*)
+            skip=true
+            break
+            ;;
+        esac
+    done
+
+    if [ "$skip" = false ]; then
+        FILTERED_FILES+=("$file")
+    fi
+done
+
 # If nothing to process — exit silently
-[ -z "$FILES" ] && exit 0
+[ -z "$FILTERED_FILES" ] && exit 0
 
 log_info "Checking SPDX headers..."
 
 get_comment_style() {
     case "$1" in
         # C-similar
-        *.php|*.js|*.ts|*.tsx|*.jsx|*.java|*.c|*.cpp|*.h|*.cs|*.go|*.rs)
+        *.php|*.js|*.mjs|*.cjs|*.ts|*.tsx|*.jsx|*.java|*.c|*.cpp|*.h|*.cs|*.go|*.rs)
             echo "slash"   # // ...
             ;;
         # shell / python / other
@@ -40,8 +67,11 @@ get_comment_style() {
             echo "hash"    # # ...
             ;;
         # CSS / SCSS / HTML / XML
-        *.css|*.scss|*.sass|*.less|*.html|*.htm|*.xml|*.vue)
+        *.css|*.scss|*.sass|*.less|*.xml|*.vue)
             echo "block"   # /* ... */
+            ;;
+        *.html|*.htm)
+            echo "html" # <!-- ... -->
             ;;
         *)
             echo "skip"
@@ -55,7 +85,7 @@ is_text_file() {
     git diff --cached --numstat -- "$1" | grep -qE '^[0-9]+'
 }
 
-for file in $FILES; do
+for file in "${FILTERED_FILES[@]}"; do
     [ ! -f "$file" ] && continue
     # skip binary
     if is_text_file "$file"; then
@@ -80,9 +110,8 @@ for file in $FILES; do
         slash)
         {
             printf "\n"
-            printf "// %s" "$SPDX_LINE"
-            printf "// %s" "$COPYRIGHT_LINE"
-            printf "\n"
+            printf "// %s\n" "$SPDX_LINE"
+            printf "// %s\n\n" "$COPYRIGHT_LINE"
             cat "$file"
         } > "$TMP_FILE"
         ;;
@@ -96,9 +125,8 @@ for file in $FILES; do
                 tail -n +2 "$file"
             else
                 printf "\n"
-                printf "# %s" "$SPDX_LINE"
-                printf "# %s" "$COPYRIGHT_LINE"
-                printf "\n"
+                printf "# %s\n" "$SPDX_LINE"
+                printf "# %s\n\n" "$COPYRIGHT_LINE"
                 cat "$file"
             fi
         } > "$TMP_FILE"
@@ -107,11 +135,19 @@ for file in $FILES; do
         {
             printf "\n"
             printf "/* %s */\n" "$SPDX_LINE"
-            printf "/* %s */\n" "$COPYRIGHT_LINE"
+            printf "/* %s */\n\n" "$COPYRIGHT_LINE"
             printf "\n"
             cat "$file"
         } > "$TMP_FILE"
         ;;
+        html)
+        {
+            printf "\n"
+            printf "<!-- %s -->\n" "$SPDX_LINE"
+            printf "<!-- %s -->\n\n" "$COPYRIGHT_LINE"
+            printf "\n"
+            cat "$file"
+        } > "$TMP_FILE"
     esac
 
     mv "$TMP_FILE" "$file"
