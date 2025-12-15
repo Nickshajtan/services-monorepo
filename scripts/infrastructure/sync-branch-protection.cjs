@@ -46,7 +46,7 @@ const main = async (configFile) => {
     process.exit(0);
 };
 
-main(path.join(process.cwd(), '.gitlab', 'labels.json')).catch((err) => {
+main(path.join(process.cwd(), '.github', 'branch-protection.yml')).catch((err) => {
     console.error(kleur.red(err));
     process.exit(1);
 });
