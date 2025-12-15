@@ -68,10 +68,10 @@ jobs:
             ;;
           esac
 
-      - name: Setup Node
+      - name: Setup Node 22
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install deps
         run: yarn install --immutable --ignore-scripts
