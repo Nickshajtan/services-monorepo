@@ -111,7 +111,7 @@ jobs:
 
       - name: Bundle AsyncAPI (PR)
         run: |
-          cd base
+          cd pr
           yarn api:async:bundle
 
       - name: Check REST OpenAPI breaking changes
