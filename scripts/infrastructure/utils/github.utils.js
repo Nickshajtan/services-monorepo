@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require('node-fetch').default;
 const kleur = require('kleur');
 
 const githubRequest = async ({ method, endpoint, body, token }) => {

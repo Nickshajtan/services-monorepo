@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require('node-fetch').default;
 const kleur = require('kleur');
 
 const gitlabRequest = async ({ method, endpoint, body, gitlabUrl, token }) => {
