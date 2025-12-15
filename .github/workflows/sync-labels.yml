@@ -9,13 +9,26 @@ on:
 
 jobs:
   sync-labels:
-    if: github.actor != 'dependabot[bot]'
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender.login != 'dependabot[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      github.event.sender.login != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       issues: write
 
     steps:
+      - name: Skip bots
+        run: |
+          echo "actor=${{ github.actor }}"
+          echo "sender=${{ github.event.sender.login }}"
+          if [ "${{ github.actor }}" = "dependabot[bot]" ] || [ "${{ github.event.sender.login }}" = "dependabot[bot]" ]; then
+            echo "Skipping workflow for Dependabot"
+            exit 0
+          fi
+
       - name: Checkout
         uses: actions/checkout@v6
 
