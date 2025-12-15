@@ -82,6 +82,7 @@ jobs:
 
       - name: Install dependencies (base)
         run: |
+          yarn install --frozen-lockfile
           cd base/scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
@@ -97,6 +98,7 @@ jobs:
 
       - name: Install dependencies (PR)
         run: |
+          yarn install --frozen-lockfile
           cd pr/scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
