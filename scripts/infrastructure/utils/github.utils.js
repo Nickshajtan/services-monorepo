@@ -24,6 +24,42 @@ const githubRequest = async ({ method, endpoint, body, token }) => {
   return res.json();
 };
 
+const githubBranchExists = async ({ owner, repo, branch, token }) => {
+  try {
+    await githubRequest({
+      method: 'GET',
+      token,
+      endpoint: `/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}`,
+    });
+    return true;
+  } catch (error) {
+    if (error.status === 404) {
+      return false;
+    }
+    throw error;
+  }
+};
+
+const listAllBranches = async ({ owner, repo, token }) => {
+  const names = new Set();
+  let page = 1;
+
+  while (true) {
+    const branches = await githubRequest({
+      method: 'GET',
+      token,
+      endpoint: `/repos/${owner}/${repo}/branches?per_page=100&page=${page}`,
+    });
+
+    if (!Array.isArray(branches) || branches.length === 0) break;
+
+    for (const b of branches) names.add(b.name);
+    page++;
+  }
+
+  return names;
+};
+
 const syncGithubBranches = async ({ config, token }) => {
   const REPO = process.env.GITHUB_REPOSITORY;
   if (!REPO) {
@@ -37,8 +73,14 @@ const syncGithubBranches = async ({ config, token }) => {
     return;
   }
 
+  const existingBranches = await listAllBranches({ owner, repo, token });
   for (const rule of config.github.branches) {
     const branch = rule.name;
+    if (!existingBranches.has(branch)) {
+      console.log(kleur.yellow(`Branch "${branch}" does not exist — skipping`));
+      continue;
+    }
+
     const body = rule.protection || {};
     console.log(kleur.blue(`Sync GitHub branch protection for ${branch}`));
 
@@ -51,4 +93,4 @@ const syncGithubBranches = async ({ config, token }) => {
   }
 };
 
-module.exports = { githubRequest, syncGithubBranches };
+module.exports = { githubRequest, syncGithubBranches, githubBranchExists, listAllBranches };
