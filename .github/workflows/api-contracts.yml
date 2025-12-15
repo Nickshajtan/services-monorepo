@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js 20
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -75,13 +75,14 @@ jobs:
           ref: ${{ github.head_ref }}
           path: pr
 
-      - name: Use Node.js 20
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
 
       - name: Install dependencies (base)
         run: |
+          yarn install --frozen-lockfile
           cd base/scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
@@ -93,10 +94,11 @@ jobs:
       - name: Bundle AsyncAPI (base)
         run: |
           cd base
-          yarn async:bundle
+          yarn api:async:bundle
 
       - name: Install dependencies (PR)
         run: |
+          yarn install --frozen-lockfile
           cd pr/scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
@@ -108,7 +110,7 @@ jobs:
       - name: Bundle AsyncAPI (PR)
         run: |
           cd base
-          yarn async:bundle
+          yarn api:async:bundle
 
       - name: Check REST OpenAPI breaking changes
         run: |
