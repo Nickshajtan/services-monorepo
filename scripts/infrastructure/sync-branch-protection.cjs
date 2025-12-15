@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2025–present Mykyta Nosov
+
 const fs = require('fs');
 const path = require('path');
 const kleur = require('kleur');
