@@ -24,10 +24,31 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Ensure critical config edited by allowed actor
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+          AUTHOR: ${{ github.actor }}
         run: |
+          set -euo pipefail
           echo "Checking who modified critical files..."
-          git fetch origin ${{ github.base_ref }} --depth=1 || true
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} -- .github/branch-protection.yml scripts/infrastructure .github/workflows)
+          echo "Author: $AUTHOR"
+          echo "Range: ${BEFORE_SHA:-<empty>}..$CURRENT_SHA"
+
+          if [ -z "${BEFORE_SHA:-}" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No valid BEFORE_SHA, using single commit diff"
+            CHANGED=$(git show --name-only --pretty="" "$CURRENT_SHA" -- \
+              .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+          else
+            if git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+              CHANGED=$(git diff --name-only "$BEFORE_SHA..$CURRENT_SHA" -- \
+                .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+            else
+              echo "BEFORE_SHA not present locally; falling back to single commit diff"
+              CHANGED=$(git show --name-only --pretty="" "$CURRENT_SHA" -- \
+                .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+            fi
+          fi
+
           if [ -z "$CHANGED" ]; then
             echo "No critical files changed."
             exit 0
