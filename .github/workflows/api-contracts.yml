@@ -82,8 +82,9 @@ jobs:
 
       - name: Install dependencies (base)
         run: |
+          cd base
           yarn install --frozen-lockfile
-          cd base/scripts/tools/api-tooling
+          cd scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
       - name: Bundle OpenAPI (base)
@@ -98,8 +99,9 @@ jobs:
 
       - name: Install dependencies (PR)
         run: |
+          cd pr
           yarn install --frozen-lockfile
-          cd pr/scripts/tools/api-tooling
+          cd scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
       - name: Bundle OpenAPI (PR)
@@ -109,7 +111,7 @@ jobs:
 
       - name: Bundle AsyncAPI (PR)
         run: |
-          cd base
+          cd pr
           yarn api:async:bundle
 
       - name: Check REST OpenAPI breaking changes
