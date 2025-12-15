@@ -12,8 +12,12 @@ on:
 
 jobs:
   validate:
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender.login != 'dependabot[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      github.event.sender.login != 'github-actions[bot]'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -36,18 +40,29 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
           echo "Validating commit names..."
-          commits=$(git log --format=%s --no-merges "$BEFORE_SHA..$CURRENT_SHA")
+          echo "Range: ${BEFORE_SHA:-<empty>}..${CURRENT_SHA}"
 
-          if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+          if [ -z "${BEFORE_SHA:-}" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
             echo "No valid BEFORE_SHA, using single commit $CURRENT_SHA"
+            range="$CURRENT_SHA"
+          else
+            if git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null && git cat-file -e "$CURRENT_SHA^{commit}" 2>/dev/null; then
+              if git merge-base --is-ancestor "$BEFORE_SHA" "$CURRENT_SHA"; then
+                range="$BEFORE_SHA..$CURRENT_SHA"
+              else
+                echo "BEFORE_SHA is not an ancestor of CURRENT_SHA, falling back to single commit"
+                range="$CURRENT_SHA"
+              fi
+            else
+              echo "One of the SHAs is not present locally (likely shallow/force-push). Falling back to single commit."
+              range="$CURRENT_SHA"
+            fi
+          fi
+
+          if [ "$range" = "$CURRENT_SHA" ]; then
             commits=$(git log --format=%s --no-merges -1 "$CURRENT_SHA")
           else
-            if git merge-base --is-ancestor "$BEFORE_SHA" "$CURRENT_SHA"; then
-              commits=$(git log --format=%s --no-merges "$BEFORE_SHA..$CURRENT_SHA")
-            else
-              echo "BEFORE_SHA is not an ancestor of CURRENT_SHA, falling back to single commit"
-              commits=$(git log --format=%s --no-merges -1 "$CURRENT_SHA")
-            fi
+            commits=$(git log --format=%s --no-merges "$range")
           fi
 
           echo "Commits to validate:"

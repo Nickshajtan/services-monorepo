@@ -9,6 +9,11 @@ on:
 
 jobs:
   sync-labels:
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender.login != 'dependabot[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      github.event.sender.login != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read

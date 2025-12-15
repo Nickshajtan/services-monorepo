@@ -19,16 +19,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Use Node.js 20
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'yarn'
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -64,25 +64,27 @@ jobs:
 
     steps:
       - name: Checkout base branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.base_ref }}
           path: base
 
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
           path: pr
 
-      - name: Use Node.js 20
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
 
       - name: Install dependencies (base)
         run: |
-          cd base/scripts/tools/api-tooling
+          cd base
+          yarn install --frozen-lockfile
+          cd scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
       - name: Bundle OpenAPI (base)
@@ -93,11 +95,13 @@ jobs:
       - name: Bundle AsyncAPI (base)
         run: |
           cd base
-          yarn async:bundle
+          yarn api:async:bundle
 
       - name: Install dependencies (PR)
         run: |
-          cd pr/scripts/tools/api-tooling
+          cd pr
+          yarn install --frozen-lockfile
+          cd scripts/tools/api-tooling
           yarn install --frozen-lockfile
 
       - name: Bundle OpenAPI (PR)
@@ -107,8 +111,8 @@ jobs:
 
       - name: Bundle AsyncAPI (PR)
         run: |
-          cd base
-          yarn async:bundle
+          cd pr
+          yarn api:async:bundle
 
       - name: Check REST OpenAPI breaking changes
         run: |

@@ -1,0 +1,83 @@
+name: Sync branch protection
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - '.github/branch-protection.yml'
+      - '.github/branch-protection.yaml'
+      - '.github/branch-protection.json'
+      - 'scripts/infrastructure/sync-branch-protection.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  sync-branch-protection:
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender.login != 'dependabot[bot]' &&
+      github.actor != 'github-actions[bot]' &&
+      github.event.sender.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Ensure critical config edited by allowed actor
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+          AUTHOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          echo "Checking who modified critical files..."
+          echo "Author: $AUTHOR"
+          echo "Range: ${BEFORE_SHA:-<empty>}..$CURRENT_SHA"
+
+          if [ -z "${BEFORE_SHA:-}" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No valid BEFORE_SHA, using single commit diff"
+            CHANGED=$(git show --name-only --pretty="" "$CURRENT_SHA" -- \
+              .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+          else
+            if git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+              CHANGED=$(git diff --name-only "$BEFORE_SHA..$CURRENT_SHA" -- \
+                .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+            else
+              echo "BEFORE_SHA not present locally; falling back to single commit diff"
+              CHANGED=$(git show --name-only --pretty="" "$CURRENT_SHA" -- \
+                .github/branch-protection.yml scripts/infrastructure .github/workflows || true)
+            fi
+          fi
+
+          if [ -z "$CHANGED" ]; then
+            echo "No critical files changed."
+            exit 0
+          fi
+
+          echo "Critical files changed:"
+          echo "$CHANGED"
+          AUTHOR="${{ github.actor }}"
+          case "$AUTHOR" in
+            Nickshajtan|some_other_senior)
+              echo "Author $AUTHOR is allowed to edit critical configs."
+              exit 0
+            ;;
+            *)
+              echo "Author $AUTHOR is NOT allowed to change critical configs."
+              exit 1
+            ;;
+          esac
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install deps
+        run: yarn install --immutable --ignore-scripts
+
+      - name: Sync branch protection
+        env:
+          TOKEN: ${{ secrets.BRANCH_ADMIN_TOKEN }}
+        run: |
+          node scripts/infrastructure/sync-branch-protection.cjs
