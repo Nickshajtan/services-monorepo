@@ -36,8 +36,16 @@ const main = async (configFile) => {
     }
 
     if (isGithub) {
-        const { syncGithubBranches } = require('./utils/github.utils');
-        await syncGithubBranches({ config, token: TOKEN });
+        const {
+            githubSupportsRulesets,
+            syncGithubBranches,
+            syncGithubRulesets,
+        } = require('./utils/github.utils');
+        if (await githubSupportsRulesets({ token: TOKEN })) {
+            await syncGithubRulesets({ config, token: TOKEN });
+        } else {
+            await syncGithubBranches({ config, token: TOKEN });
+        }
     }
 
     if (isGitlab) {

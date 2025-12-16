@@ -96,4 +96,71 @@ const syncGithubBranches = async ({ config, token }) => {
   }
 };
 
-module.exports = { githubRequest, syncGithubBranches, githubBranchExists, listAllBranches };
+const syncGithubRulesets = async ({ config, token }) => {
+  const REPO = process.env.GITHUB_REPOSITORY;
+  if (!REPO) {
+    throw new Error('GITHUB_REPOSITORY not set');
+  }
+
+  const [owner, repo] = REPO.split('/');
+  const desired = config.github?.rulesets;
+  if (!desired?.length) {
+    return;
+  }
+
+  const existing = await githubRequest({
+    method: 'GET',
+    token,
+    endpoint: `/repos/${owner}/${repo}/rulesets?per_page=100`,
+  });
+  const map = new Map((existing || []).map((rs) => [rs.name, rs]));
+  for (const rs of desired) {
+    const current = map.get(rs.name);
+    if (!current) {
+      await githubRequest({
+        method: 'POST',
+        token,
+        endpoint: `/repos/${owner}/${repo}/rulesets`,
+        body: rs,
+      });
+    } else {
+      await githubRequest({
+        method: 'PUT',
+        token,
+        endpoint: `/repos/${owner}/${repo}/rulesets/${current.id}`,
+        body: { ...rs, id: current.id },
+      });
+    }
+  }
+};
+
+const githubSupportsRulesets = async ({ token }) => {
+  const REPO = process.env.GITHUB_REPOSITORY;
+  if (!REPO) {
+    throw new Error('GITHUB_REPOSITORY not set');
+  }
+
+  try {
+    const [owner, repo] = REPO.split('/');
+    await githubRequest({
+      method: 'GET',
+      token,
+      endpoint: `/repos/${owner}/${repo}/rulesets?per_page=1`,
+    });
+    return true;
+  } catch (error) {
+    if (error.status === 404) {
+      return false;
+    }
+    throw error;
+  }
+};
+
+module.exports = {
+  githubSupportsRulesets,
+  githubRequest,
+  syncGithubBranches,
+  githubBranchExists,
+  listAllBranches,
+  syncGithubRulesets,
+};
