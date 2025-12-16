@@ -103,7 +103,14 @@ const syncGithubRulesets = async ({ config, token }) => {
   }
 
   const [owner, repo] = REPO.split('/');
-  const desired = config.github?.rulesets;
+  const collectRulesetsFromBranches = (config) => {
+    const out = [];
+    for (const b of config.github?.branches ?? []) {
+      for (const rs of b.rulesets ?? []) out.push(rs);
+    }
+    return out;
+  };
+  const desired = collectRulesetsFromBranches(config);
   if (!desired?.length) {
     return;
   }
