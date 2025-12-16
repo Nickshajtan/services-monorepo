@@ -13,6 +13,14 @@ github:
         allow_force_pushes: false
         allow_deletions: false
         required_conversation_resolution: true
+      rulesets:
+        - name: main
+          target: branch
+          enforcement: active
+          conditions:
+            ref_name:
+              include: ['refs/heads/main']
+              exclude: []
 
     - name: develop
       protection:
@@ -24,3 +32,11 @@ github:
         restrictions: null
         allow_force_pushes: true
         allow_deletions: false
+      rulesets:
+        - name: develop
+          target: branch
+          enforcement: active
+          conditions:
+            ref_name:
+              include: ['refs/heads/develop']
+              exclude: []
