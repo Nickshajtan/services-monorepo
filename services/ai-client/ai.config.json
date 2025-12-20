@@ -13,29 +13,12 @@
   },
   "domains": {
     "devdocs": {
-      "tasks": {
-        "query": {
-          "provider": "openai",
-          "model": "gpt-4.1",
-          "temperature": 0.2,
-          "instructions": "You are a concise engineering assistant. Return markdown when useful."
-        }
-      }
-    },
-    "templates": {
-      "module-readme": {
-        "provider": "openai",
-        "instructions": "You write repository documentation. Output only markdown.",
-        "prompt": "Generate README for {{name}}.\n\nContext:\n{{context}}\n\nAPI:\n{{api}}\n"
-      }
-    },
-    "branding": {
+      "llm": {
+        "query": { "model": "gpt-4.1", "instructions": "Be concise" },
+        "doc": { "prompt": "Generate README {{name}}" }
+      },
       "image": {
-        "provider": "openai",
-        "model": "gpt-image-1",
-        "size": "1024x1024",
-        "background": "transparent",
-        "outputFormat": "png"
+        "default": { "model": "gpt-image-1", "background": "transparent" }
       }
     }
   }

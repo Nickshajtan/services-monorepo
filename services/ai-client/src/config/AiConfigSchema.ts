@@ -6,31 +6,27 @@ const ProviderConfigSchema = z.object({
   timeoutMs: z.number().int().positive().optional()
 });
 
-const DomainTaskConfigSchema = z.object({
+const LlmEntrySchema = z.object({
   provider: z.string().optional(),
   model: z.string().optional(),
   temperature: z.number().optional(),
-  instructions: z.string().optional()
-});
-
-const DomainTemplateConfigSchema = z.object({
-  provider: z.string().optional(),
   instructions: z.string().optional(),
-  prompt: z.string().min(1)
-});
+  prompt: z.string().optional(),
+  meta: z.record(z.unknown()).optional()
+}).passthrough();
 
-const DomainImageConfigSchema = z.object({
+const ImageEntrySchema = z.object({
   provider: z.string().optional(),
   model: z.string().optional(),
-  size: z.enum(["1024x1024", "1024x1536", "1536x1024"]).optional(),
-  background: z.enum(["transparent", "opaque"]).optional(),
-  outputFormat: z.enum(["png", "webp", "jpeg"]).optional()
-});
+  size: z.enum(["1024x1024","1024x1536","1536x1024"]).optional(),
+  background: z.enum(["transparent","opaque"]).optional(),
+  outputFormat: z.enum(["png","webp","jpeg"]).optional(),
+  meta: z.record(z.unknown()).optional()
+}).passthrough();
 
-const DomainConfigSchema = z.object({
-  tasks: z.record(DomainTaskConfigSchema).optional(),
-  templates: z.record(DomainTemplateConfigSchema).optional(),
-  image: DomainImageConfigSchema.optional()
+const DomainSchema = z.object({
+  llm: z.record(LlmEntrySchema).optional(),
+  image: z.record(ImageEntrySchema).optional()
 });
 
 export const AiConfigSchema = z.object({
@@ -40,7 +36,7 @@ export const AiConfigSchema = z.object({
     temperature: z.number().optional()
   }),
   providers: z.record(ProviderConfigSchema),
-  domains: z.record(DomainConfigSchema)
+  domains: z.record(DomainSchema)
 });
 
 export type AiConfigParsed = z.infer<typeof AiConfigSchema>;
