@@ -18,9 +18,9 @@ const LlmEntrySchema = z.object({
 const ImageEntrySchema = z.object({
   provider: z.string().optional(),
   model: z.string().optional(),
-  size: z.enum(["1024x1024","1024x1536","1536x1024"]).optional(),
-  background: z.enum(["transparent","opaque"]).optional(),
-  outputFormat: z.enum(["png","webp","jpeg"]).optional(),
+  size: z.string().optional(),
+  background: z.string().optional(),
+  outputFormat: z.string().optional(),
   meta: z.record(z.unknown()).optional()
 }).passthrough();
 
