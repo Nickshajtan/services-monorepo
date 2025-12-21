@@ -55,14 +55,10 @@ describe("AiConfigLoader", () => {
     const valid = {
       defaults: { provider: "openai", model: "gpt-4.1-mini", temperature: 0.2 },
       providers: { openai: { apiKeyEnv: "OPENAI_API_KEY", baseUrl: null, timeoutMs: 30000 } },
-      domains: {
-        devdocs: {
-          llm: {
-            query: { provider: "openai", model: "gpt-4.1", temperature: 0.2 },
-            doc:   { provider: "openai", prompt: "Hello {{name}}" }
-          },
-          image: { default: { model: "gpt-image-1", background: "transparent" } },
-        },
+      routes: {
+        "devdocs.llm.query": { provider: "openai", model: "gpt-4.1", temperature: 0.2 },
+        "devdocs.llm.doc": { provider: "openai", prompt: "Hello {{name}}" },
+        "branding.image.default": { model: "gpt-image-1", background: "transparent" }
       }
     };
 
@@ -71,7 +67,7 @@ describe("AiConfigLoader", () => {
     const cfg = loader.load("config/ai.config.json");
     expect(cfg.defaults.provider).toBe("openai");
     expect(cfg.providers.openai.apiKeyEnv).toBe("OPENAI_API_KEY");
-    expect(cfg.domains.devdocs.image.default.background).toBe("transparent");
+    expect(cfg.routes["devdocs.llm.doc"].prompt).toContain("{{name}}");
   });
 
   it("supports absolute paths too", () => {
@@ -84,7 +80,7 @@ describe("AiConfigLoader", () => {
         {
           defaults: { provider: "openai", model: "gpt-4.1-mini" },
           providers: { openai: { apiKeyEnv: "OPENAI_API_KEY", baseUrl: null } },
-          domains: {}
+          routes: {}
         },
         null,
         2

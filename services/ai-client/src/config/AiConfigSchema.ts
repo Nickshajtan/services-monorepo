@@ -6,28 +6,21 @@ const ProviderConfigSchema = z.object({
   timeoutMs: z.number().int().positive().optional()
 });
 
-const LlmEntrySchema = z.object({
+const RouteEntrySchema = z.object({
+  // routing/policy
   provider: z.string().optional(),
+  // llm-ish
   model: z.string().optional(),
   temperature: z.number().optional(),
   instructions: z.string().optional(),
   prompt: z.string().optional(),
-  meta: z.record(z.unknown()).optional()
-}).passthrough();
-
-const ImageEntrySchema = z.object({
-  provider: z.string().optional(),
-  model: z.string().optional(),
+  // image-ish (string, без enum)
   size: z.string().optional(),
   background: z.string().optional(),
   outputFormat: z.string().optional(),
+  // additional data
   meta: z.record(z.unknown()).optional()
 }).passthrough();
-
-const DomainSchema = z.object({
-  llm: z.record(LlmEntrySchema).optional(),
-  image: z.record(ImageEntrySchema).optional()
-});
 
 export const AiConfigSchema = z.object({
   defaults: z.object({
@@ -36,7 +29,8 @@ export const AiConfigSchema = z.object({
     temperature: z.number().optional()
   }),
   providers: z.record(ProviderConfigSchema),
-  domains: z.record(DomainSchema)
+  routes: z.record(RouteEntrySchema)
 });
 
 export type AiConfigParsed = z.infer<typeof AiConfigSchema>;
+export type RouteEntry = z.infer<typeof RouteEntrySchema>;

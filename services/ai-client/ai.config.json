@@ -11,15 +11,20 @@
       "timeoutMs": 30000
     }
   },
-  "domains": {
-    "devdocs": {
-      "llm": {
-        "query": { "model": "gpt-4.1", "instructions": "Be concise" },
-        "doc": { "prompt": "Generate README {{name}}" }
-      },
-      "image": {
-        "default": { "model": "gpt-image-1", "background": "transparent" }
-      }
+  "routes": {
+    "devdocs.llm.query": {
+      "model": "gpt-4.1",
+      "instructions": "Be concise"
+    },
+    "devdocs.llm.doc": {
+      "prompt": "Generate README for {{name}}...\n",
+      "instructions": "Output only markdown"
+    },
+    "branding.image.default": {
+      "model": "gpt-image-1",
+      "background": "transparent",
+      "outputFormat": "png",
+      "size": "1024x1024"
     }
   }
 }
