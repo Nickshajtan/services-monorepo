@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RouteResolver } from "../src/config/RouteResolver.js";
+import { RouteResolver } from "../src/app/routes/RouteResolver.js";
 import type { AiConfigParsed } from "../src/config/AiConfigSchema.js";
 
 const cfg: AiConfigParsed = {
@@ -32,8 +32,8 @@ describe("RouteResolver", () => {
     expect(() => resolver.resolve("missing.llm.query")).toThrow(/Route not found/i);
   });
 
-  it("has() works", () => {
-    expect(resolver.has("devdocs.llm.query")).toBe(true);
-    expect(resolver.has("nope")).toBe(false);
+  it("matches() works", () => {
+    expect(resolver.matches("devdocs.llm.query")).toBe(true);
+    expect(resolver.matches("nope")).toBe(false);
   });
 });
