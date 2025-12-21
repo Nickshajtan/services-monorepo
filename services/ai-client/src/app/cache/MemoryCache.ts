@@ -1,13 +1,13 @@
-import { Cache } from './CacheInterface.js';
+import { Cache } from '@app/cache/CacheInterface';
 
-export class MemoryCache implements Cache {
-  private map = new Map<string, unknown>();
+export class MemoryCache<T> implements Cache<T> {
+  private map = new Map<string, T>();
 
-  get<V>(ns: string, key: string): V | undefined {
-    return this.map.get(`${ns}:${key}`) as V | undefined;
+  get(ns: string, key: string): T | undefined {
+    return this.map.get(`${ns}:${key}`);
   }
 
-  set<V>(ns: string, key: string, value: V): void {
+  set(ns: string, key: string, value: T): void {
     this.map.set(`${ns}:${key}`, value);
   }
 }

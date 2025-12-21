@@ -1,6 +1,6 @@
-import type { AiConfigParsed, RouteEntry } from "../../config/AiConfigSchema.js";
-import { MemoryCache } from '../cache/MemoryCache.js';
-import { Cache } from '../cache/CacheInterface.js';
+import type { AiConfigParsed, RouteEntry } from "@config/AiConfigSchema";
+import { MemoryCache } from '@app/cache/MemoryCache';
+import { Cache } from '@app/cache/CacheInterface';
 
 export type ResolvedRoute = RouteEntry & {
   key: string;

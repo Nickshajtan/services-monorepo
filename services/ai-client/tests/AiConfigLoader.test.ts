@@ -5,7 +5,7 @@ import fs from "fs";
 import os from "os";
 // @ts-ignore
 import path from "path";
-import { AiConfigLoader } from "../src/config/AiConfigLoader.js";
+import { AiConfigLoader } from "@config/AiConfigLoader";
 
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "ai-config-loader-"));
 const writeFile = (p: string, content: string) => {

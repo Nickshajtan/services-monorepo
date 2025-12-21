@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { RouteResolver } from "../src/app/routes/RouteResolver.js";
-import type { AiConfigParsed } from "../src/config/AiConfigSchema.js";
+import { RouteResolver } from "@app/routes/RouteResolver";
+import type { AiConfigParsed } from "@config/AiConfigSchema";
 
 const cfg: AiConfigParsed = {
   defaults: { provider: "openai", model: "gpt-4.1-mini", temperature: 0.2 },

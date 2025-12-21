@@ -2,13 +2,19 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Bundler",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@config/*": ["src/config/*"],
+      "@tests/*": ["tests/*"]
+    }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
 }

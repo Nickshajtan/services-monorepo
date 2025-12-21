@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { AiConfigSchema, type AiConfigParsed } from "./AiConfigSchema.js";
+import { AiConfigSchema, type AiConfigParsed } from "@config/AiConfigSchema";
 
 export class AiConfigLoader {
   public load(configPath: string): AiConfigParsed {
