@@ -1,26 +1,14 @@
+import { LlmPayload, ImagePayload } from '@app/types';
+
 export interface AiProvider {
   name: string;
 
   llm?: {
-    run(input: {
-      model: string;
-      temperature?: number;
-      instructions?: string;
-      prompt?: string;
-      payload: unknown;
-      meta?: Record<string, unknown>;
-    }): Promise<{ text: string; raw?: unknown }>;
+    run(input: LlmPayload): Promise<{ text: string; raw?: unknown }>;
   };
 
   image?: {
-    run(input: {
-      model: string;
-      size?: string;
-      background?: string;
-      outputFormat?: string;
-      payload: unknown;
-      meta?: Record<string, unknown>;
-    }): Promise<{ base64: string; mimeType: string; raw?: unknown }>;
+    run(input: ImagePayload): Promise<{ base64: string; mimeType: string; raw?: unknown }>;
   };
 }
 

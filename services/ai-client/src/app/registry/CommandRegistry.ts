@@ -1,9 +1,4 @@
-export const Capabilities = {
-  LLM: "llm",
-  Image: "image",
-} as const;
-
-export type Capability = typeof Capabilities[keyof typeof Capabilities];
+import { Capability } from '@app/types';
 
 export type CommandDefinition = {
   capability: Capability;

@@ -1,14 +1,8 @@
 import type { AiConfigParsed, RouteEntry } from "@config/AiConfigSchema";
 import { MemoryCache } from '@app/cache/MemoryCache';
 import { Cache } from '@app/cache/CacheInterface';
-
-export type ResolvedRoute = RouteEntry & {
-  key: string;
-  provider: string;
-  model: string;
-  temperature?: number;
-  matchedKeys: string[];
-};
+import { Capability, ResolvedRoute } from '@app/types';
+import { isCapability } from '@app/helpers';
 
 type ResolvedWildcards = {
   acc: RouteEntry;
@@ -48,6 +42,8 @@ export class RouteResolver {
     return this.resolve(`${domain}.${capability}.${command}`);
   }
 
+  resolve<C extends Capability>(routeKey: `${string}.${C}.${string}`): ResolvedRoute<C>;
+  resolve(routeKey: string): ResolvedRoute;
   resolve(key: string): ResolvedRoute {
     const resolved = this.tryResolve(key);
     if (!resolved) {
@@ -73,6 +69,10 @@ export class RouteResolver {
     }
 
     const [domain, cap, cmd] = parts;
+    if (!isCapability(cap)) {
+      throw new Error(`Unknown capability in route key: ${key}`);
+    }
+
     const resolved = this.resolveWildcards(domain, cap, cmd);
     if (!resolved) {
       this.cache.set(NS, key, null);
@@ -88,7 +88,8 @@ export class RouteResolver {
       provider,
       model,
       temperature: acc.temperature ?? this.cfg.defaults.temperature,
-      matchedKeys
+      matchedKeys,
+      capability: cap
     };
 
     this.cache.set(NS, key, result);
