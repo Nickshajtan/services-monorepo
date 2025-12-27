@@ -19,7 +19,11 @@ export class RouteResolver {
       new MemoryCache(),'.', MAX_CONFIG_SEGMENTS
     ),
     private readonly cache: Cache<ResolvedRoute | null> = new MemoryCache()
-  ) {}
+  ) {
+    for (const k of Object.keys(this.cfg.routes)) {
+      this.wildcards.validatePattern(k);
+    }
+  }
 
   matches(key: string): boolean {
     const parts = key.split(".");
