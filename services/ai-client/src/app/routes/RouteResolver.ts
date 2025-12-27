@@ -1,6 +1,7 @@
 import type { AiConfigParsed, RouteEntry } from "@config/AiConfigSchema";
 import { MemoryCache } from '@app/cache/MemoryCache';
 import { Cache } from '@app/cache/CacheInterface';
+import { WildcardKeyResolver } from '@app/WildcardKeyResolver'
 import { Capability, ResolvedRoute } from '@app/types';
 import { isCapability } from '@app/helpers';
 
@@ -9,21 +10,24 @@ type ResolvedWildcards = {
   matchedKeys: string[];
 };
 
+const MAX_CONFIG_SEGMENTS = 3 as const;
+
 export class RouteResolver {
   constructor(
     private readonly cfg: AiConfigParsed,
+    private readonly wildcards: WildcardKeyResolver = new WildcardKeyResolver(
+      new MemoryCache(),'.', MAX_CONFIG_SEGMENTS
+    ),
     private readonly cache: Cache<ResolvedRoute | null> = new MemoryCache()
   ) {}
 
   matches(key: string): boolean {
     const parts = key.split(".");
-    if (parts.length !== 3) {
+    if (parts.length !== MAX_CONFIG_SEGMENTS) {
       return false;
     }
 
-    const [domain, cap, cmd] = parts;
-    const candidates = this.getCandidateKeys(domain, cap, cmd);
-
+    const candidates = this.wildcards.getCandidateKeys(key);
     for (const k of candidates) {
       if (this.cfg.routes[k]) {
         return true;
@@ -31,15 +35,6 @@ export class RouteResolver {
     }
 
     return false;
-  }
-
-
-  /**
-   * convenience helper:
-   * build key from parts: domain="devdocs", cap="llm", cmd="query"
-   */
-  resolveParts(domain: string, capability: string, command: string): ResolvedRoute {
-    return this.resolve(`${domain}.${capability}.${command}`);
   }
 
   resolve<C extends Capability>(routeKey: `${string}.${C}.${string}`): ResolvedRoute<C>;
@@ -54,7 +49,7 @@ export class RouteResolver {
   }
 
   /**
-   * resolve exact route key: "devdocs.llm.query"
+   * resolve the exact route key: "devdocs.llm.query"
    */
   protected tryResolve(key: string): ResolvedRoute | null {
     const NS = "RouteResolver:tryResolve";
@@ -64,16 +59,16 @@ export class RouteResolver {
     }
 
     const parts = key.split('.');
-    if (parts.length !== 3) {
-      throw new Error(`Invalid route key (expected 3 parts): ${key}`);
+    if (parts.length !== MAX_CONFIG_SEGMENTS) {
+      throw new Error(`Invalid route key (expected ${MAX_CONFIG_SEGMENTS} parts): ${key}`);
     }
 
-    const [domain, cap, cmd] = parts;
+    const cap = parts[1];
     if (!isCapability(cap)) {
       throw new Error(`Unknown capability in route key: ${key}`);
     }
 
-    const resolved = this.resolveWildcards(domain, cap, cmd);
+    const resolved = this.resolveWildcards(key);
     if (!resolved) {
       this.cache.set(NS, key, null);
       return null;
@@ -96,8 +91,18 @@ export class RouteResolver {
     return result;
   }
 
-  protected resolveWildcards(domain: string, cap: string, cmd: string): ResolvedWildcards | null {
-    const candidates = this.getCandidateKeys(domain, cap, cmd);
+  /**
+   *  Wildcard rules:
+   *   - exact: a.b.c
+   *   - wildcard command: a.b.*
+   *   - wildcard capability: a.*.*
+   *   - wildcard domain: *.b.c
+   *   - wildcard domain+command: *.b.*
+   *   - global: *.*.*
+   *
+   */
+  protected resolveWildcards(key: string): ResolvedWildcards | null {
+    const candidates = this.wildcards.getCandidateKeys(key);
 
     let acc: RouteEntry = {};
     const matched: string[] = [];
@@ -111,7 +116,6 @@ export class RouteResolver {
       acc = { ...acc, ...entry };
       matched.push(k);
     }
-    matched.reverse();
 
     if (matched.length === 0) {
       return null;
@@ -119,32 +123,7 @@ export class RouteResolver {
 
     return {
       acc,
-      matchedKeys: matched.reverse()
+      matchedKeys: matched
     };
-  }
-
-  /**
-   *  Wildcard rules:
-   *   - exact: a.b.c
-   *   - wildcard command: a.b.*
-   *   - wildcard capability: a.*.*
-   *   - wildcard domain: *.b.c
-   *   - wildcard domain+command: *.b.*
-   *   - global: *.*.*
-   *
-   * @param domain
-   * @param cap
-   * @param cmd
-   * @private
-   */
-  private getCandidateKeys(domain: string, cap: string, cmd: string): string[] {
-    return [
-      `${domain}.${cap}.${cmd}`,
-      `${domain}.${cap}.*`,
-      `${domain}.*.*`,
-      `*.${cap}.${cmd}`,
-      `*.${cap}.*`,
-      `*.*.*`,
-    ];
   }
 }

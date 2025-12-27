@@ -22,12 +22,6 @@ describe("RouteResolver", () => {
     expect(r.instructions).toBe("Be concise");
   });
 
-  it("resolves by parts", () => {
-    const r = resolver.resolveParts("branding", "image", "default");
-    expect(r.model).toBe("gpt-image-1");
-    expect(r.background).toBe("transparent");
-  });
-
   it("throws on missing route", () => {
     expect(() => resolver.resolve("missing.llm.query"))
       .toThrow(/Route not found:\s*missing\.llm\.query/i);
