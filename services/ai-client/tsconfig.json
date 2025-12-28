@@ -10,6 +10,8 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,
     "paths": {
       "@app/*": ["src/app/*"],
       "@config/*": ["src/config/*"],

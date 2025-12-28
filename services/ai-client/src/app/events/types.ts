@@ -23,3 +23,32 @@ export const EmitStrategies = {
   },
 } satisfies Record<(typeof EmitMode)[keyof typeof EmitMode], EmitStrategy>;
 export type EmitMode = keyof typeof EmitStrategies;
+
+export const META = Symbol('eventbus:meta');
+export enum MetaTypes {
+  On = 'on',
+  Use = 'use',
+}
+export type MetaTypeValue = typeof MetaTypes[keyof typeof MetaTypes];
+export type MetaCommon = {
+  group?: string;
+  priority?: number;
+};
+export type OnOptions = MetaCommon & {
+  once?: boolean;
+  debounceMs?: number;
+};
+export type OnMeta = {
+  kind: MetaTypes.On;
+  pattern: string;
+  method: string | symbol;
+  options?: OnOptions;
+};
+export type UseMeta = {
+  kind: MetaTypes.Use;
+  pattern: string;
+  method: string | symbol;
+  options?: MetaCommon;
+};
+export type Meta = Array<OnMeta | UseMeta>;
+export type Disposable = { dispose(): void };
