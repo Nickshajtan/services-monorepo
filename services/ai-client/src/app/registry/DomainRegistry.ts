@@ -1,25 +1,9 @@
-export type DomainDefinition = {
-  key: string;
-  title?: string;
-  description?: string;
-  tags?: string[];
-};
+import { DomainDefinition } from '@app/registry/types';
+import { AbstractRegistry } from '@app/registry/AbstractRegistry';
 
-export class DomainRegistry {
-  private readonly domains = new Map<string, DomainDefinition>();
-
-  register(def: DomainDefinition): void {
-    if (this.domains.has(def.key)) {
-      throw new Error(`Domain already registered: ${def.key}`);
-    }
-    this.domains.set(def.key, def);
-  }
-
-  get(key: string): DomainDefinition | undefined {
-    return this.domains.get(key);
-  }
-
-  list(): DomainDefinition[] {
-    return [...this.domains.values()];
+export class DomainRegistry extends AbstractRegistry<DomainDefinition> {
+  protected throwRegistrationError(def: DomainDefinition): void
+  {
+    this.throw(`Domain already registered: ${def.key}`);
   }
 }

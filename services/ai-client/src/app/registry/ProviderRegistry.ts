@@ -1,36 +1,16 @@
-import { LlmPayload, ImagePayload } from '@app/types';
+import { AiProviderDefenition } from '@app/registry/types';
+import { AbstractRegistry } from '@app/registry/AbstractRegistry';
 
-export interface AiProvider {
-  name: string;
-
-  llm?: {
-    run(input: LlmPayload): Promise<{ text: string; raw?: unknown }>;
-  };
-
-  image?: {
-    run(input: ImagePayload): Promise<{ base64: string; mimeType: string; raw?: unknown }>;
-  };
-}
-
-export class ProviderRegistry {
-  private readonly providers = new Map<string, AiProvider>();
-
-  register(p: AiProvider): void {
-    if (this.providers.has(p.name)) {
-      throw new Error(`Provider already registered: ${p.name}`);
-    }
-    this.providers.set(p.name, p);
+export class ProviderRegistry extends AbstractRegistry<AiProviderDefenition> {
+  protected throwRegistrationError(def: AiProviderDefenition): void {
+    this.throw(`Provider already registered: ${def.key}`);
   }
 
-  get(name: string): AiProvider {
-    const p = this.providers.get(name);
-    if (!p) {
-      throw new Error(`Provider not found: ${name}`);
+  get(key: string): AiProviderDefenition | undefined {
+    if ( ! this.items.has(key) ) {
+      this.throw('Provider not found');
     }
-    return p;
-  }
 
-  list(): AiProvider[] {
-    return [...this.providers.values()];
+    return this.items.get(key);
   }
 }

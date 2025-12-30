@@ -1,33 +1,13 @@
-import { Capability } from '@app/types';
+import { CommandDefinition, CommandName } from '@app/registry/types';
+import { AbstractRegistry } from '@app/registry/AbstractRegistry';
 
-export type CommandDefinition = {
-  capability: Capability;
-  command: string;
-  description?: string;
-};
-
-type CommandKey = `${Capability}.${string}`;
-
-export class CommandRegistry {
-  private readonly commands = new Map<CommandKey, CommandDefinition>();
-
-  register(def: CommandDefinition): void {
-    const key = this.keyOf(def.capability, def.command);
-    if (this.commands.has(key)) {
-      throw new Error(`Command already registered: ${key}`);
-    }
-    this.commands.set(key, def);
+export class CommandRegistry extends AbstractRegistry<CommandDefinition> {
+  protected throwRegistrationError(def: CommandDefinition): void
+  {
+    this.throw(`Command already registered: ${this.makeKey(def)}`);
   }
 
-  get(capability: Capability, command: string): CommandDefinition | undefined {
-    return this.commands.get(this.keyOf(capability, command));
-  }
-
-  list(): CommandDefinition[] {
-    return [...this.commands.values()];
-  }
-
-  private keyOf(cap: Capability, cmd: string): CommandKey {
-    return `${cap}.${cmd}`;
+  protected makeKey(def: CommandDefinition): CommandName {
+    return `${def.key}.${def.capability}.${def.command}`;
   }
 }
