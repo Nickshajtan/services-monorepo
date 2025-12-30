@@ -13,3 +13,11 @@ export type PluginCore = {
   collector: Collector;
   ensureMethod: (descriptor?: PropertyDescriptor, key?: string | symbol) => void;
 };
+export type DecoratorPlugin<TApi extends Record<string, any>> = {
+  name: string;
+  build(core: PluginCore): TApi;
+};
+export type AppDecorators<TDecorators extends Record<string, any>> = {
+  decorators: TDecorators;
+  register(instance: object): Disposable | null;
+};

@@ -1,4 +1,4 @@
-import { BindAdapter, PluginCore } from '@app/decorators/contracts';
+import { BindAdapter, PluginCore, DecoratorPlugin } from '@app/decorators/contracts';
 import { makeMethodPatch } from '@app/decorators/helpers';
 import { Disposable, MetaEntry } from '@app/decorators/types';
 import { MetaTypeValue, MetaTypes } from '@app/events/types';
@@ -8,44 +8,47 @@ type EventEntryBase = MetaEntry & {
   kind: MetaTypeValue;
 };
 
-export function eventsPlugin<E extends Record<string, any>>(channel = 'events') {
+export function eventsPlugin<E extends Record<string, any>>(channel = 'events'): DecoratorPlugin<object> {
   type EventKey = Extract<keyof E, string>;
 
-  return (core: PluginCore) => {
-    const patch = makeMethodPatch(core);
+  return {
+    name: 'events',
+    build(core: PluginCore) {
+      const patch = makeMethodPatch(core);
 
-    const onEvent =
-      <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
-        (target, propertyKey, descriptor) => {
-          core.ensureMethod(descriptor, propertyKey);
-          core.collector.push(target, { kind: MetaTypes.On, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
-        };
+      const onEvent =
+        <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
+          (target, propertyKey, descriptor) => {
+            core.ensureMethod(descriptor, propertyKey);
+            core.collector.push(target, { kind: MetaTypes.On, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
+          };
 
-    const onEventOnce = <K extends EventKey>(pattern: K): MethodDecorator =>
-      onEvent(pattern, { once: true });
+      const onEventOnce = <K extends EventKey>(pattern: K): MethodDecorator =>
+        onEvent(pattern, { once: true });
 
-    const onEventDebounce = <K extends EventKey>(pattern: K, debounceMs: number): MethodDecorator =>
-      onEvent(pattern, { debounceMs });
+      const onEventDebounce = <K extends EventKey>(pattern: K, debounceMs: number): MethodDecorator =>
+        onEvent(pattern, { debounceMs });
 
-    const useMiddleware =
-      <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
-        (target, propertyKey, descriptor) => {
-          core.ensureMethod(descriptor, propertyKey);
-          core.collector.push(target, { kind: MetaTypes.Use, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
-        };
+      const useMiddleware =
+        <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
+          (target, propertyKey, descriptor) => {
+            core.ensureMethod(descriptor, propertyKey);
+            core.collector.push(target, { kind: MetaTypes.Use, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
+          };
 
-    const MiddlewarePriority = (value: number): MethodDecorator => patch({ priority: value });
-    const MiddlewareGroup = (name: string): MethodDecorator => patch({ group: name })
+      const MiddlewarePriority = (value: number): MethodDecorator => patch({ priority: value });
+      const MiddlewareGroup = (name: string): MethodDecorator => patch({ group: name })
 
-    return {
-      onEvent,
-      onEventOnce,
-      onEventDebounce,
-      useMiddleware,
-      MiddlewarePriority,
-      MiddlewareGroup
-    } as const;
-  };
+      return {
+        onEvent,
+        onEventOnce,
+        onEventDebounce,
+        useMiddleware,
+        MiddlewarePriority,
+        MiddlewareGroup
+      } as const;
+    }
+  } as const;
 }
 
 export function eventBusAdapter<E extends Record<string, any>>(
