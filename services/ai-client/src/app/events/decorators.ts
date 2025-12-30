@@ -16,9 +16,9 @@ export function eventsPlugin<E extends Record<string, any>>(channel = 'events') 
 
     const onEvent =
       <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
-        (t, k, d) => {
-          core.ensureMethod(d, k);
-          core.collector.push(t, { kind: MetaTypes.On, channel, pattern, method: k, options } satisfies EventEntryBase);
+        (target, propertyKey, descriptor) => {
+          core.ensureMethod(descriptor, propertyKey);
+          core.collector.push(target, { kind: MetaTypes.On, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
         };
 
     const onEventOnce = <K extends EventKey>(pattern: K): MethodDecorator =>
@@ -29,9 +29,9 @@ export function eventsPlugin<E extends Record<string, any>>(channel = 'events') 
 
     const useMiddleware =
       <K extends EventKey>(pattern: K, options?: Record<string, any>): MethodDecorator =>
-        (t, k, d) => {
-          core.ensureMethod(d, k);
-          core.collector.push(t, { kind: MetaTypes.Use, channel, pattern, method: k, options } satisfies EventEntryBase);
+        (target, propertyKey, descriptor) => {
+          core.ensureMethod(descriptor, propertyKey);
+          core.collector.push(target, { kind: MetaTypes.Use, channel, pattern, method: propertyKey, options } satisfies EventEntryBase);
         };
 
     const MiddlewarePriority = (value: number): MethodDecorator => patch({ priority: value });

@@ -11,5 +11,5 @@ export type BindAdapter = {
 };
 export type PluginCore = {
   collector: Collector;
-  ensureMethod: (d?: PropertyDescriptor, n?: string | symbol) => void;
+  ensureMethod: (descriptor?: PropertyDescriptor, key?: string | symbol) => void;
 };
