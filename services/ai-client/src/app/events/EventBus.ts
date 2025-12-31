@@ -1,15 +1,13 @@
 import { EventBusInterface } from '@app/events/contracts';
 import { EventHandler, Middleware, Unsubscribe, EmitMode, EmitStrategies } from '@app/events/types';
-import { WildcardKeyResolver } from '@app/WildcardKeyResolver';
+import { WildcardInterface } from '@app/wildcards/contracts';
 import { MemoryCache } from '@app/cache/MemoryCache';
 
 export class EventBus<E extends Record<string, any>> implements EventBusInterface<E> {
   private handlers = new Map<string, Set<EventHandler<any>>>();
   private middlewares = new Map<string, Set<Middleware<any>>>();
   constructor(
-    private readonly wildcards: WildcardKeyResolver = new WildcardKeyResolver(
-      new MemoryCache(), '.', 4
-    ),
+    private readonly wildcards: WildcardInterface,
     private readonly opts: { validatePatterns?: boolean, mode?: EmitMode } = {
       validatePatterns: true, mode: EmitMode.Sequential
     }

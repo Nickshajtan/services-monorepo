@@ -2,7 +2,7 @@ import { describe, beforeEach, it, expect, vi } from 'vitest';
 import { EventBus } from '@app/events/EventBus';
 import { EmitMode } from '@app/events/types';
 import { MemoryCache } from '@app/cache/MemoryCache';
-import { WildcardKeyResolver } from '@app/WildcardKeyResolver';
+import { WildcardKeyResolver } from '@app/wildcards/WildcardKeyResolver';
 
 type Events = {
   'a.b.c': { n: number };

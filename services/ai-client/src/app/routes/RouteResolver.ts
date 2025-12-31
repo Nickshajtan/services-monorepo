@@ -1,7 +1,7 @@
 import type { AiConfigParsed, RouteEntry } from "@config/AiConfigSchema";
 import { MemoryCache } from '@app/cache/MemoryCache';
 import { Cache } from '@app/cache/CacheInterface';
-import { WildcardKeyResolver } from '@app/WildcardKeyResolver'
+import { WildcardInterface } from '@app/wildcards/contracts';
 import { Capability, ResolvedRoute } from '@app/types';
 import { isCapability } from '@app/helpers';
 
@@ -15,11 +15,10 @@ const MAX_CONFIG_SEGMENTS = 3 as const;
 export class RouteResolver {
   constructor(
     private readonly cfg: AiConfigParsed,
-    private readonly wildcards: WildcardKeyResolver = new WildcardKeyResolver(
-      new MemoryCache(),'.', MAX_CONFIG_SEGMENTS
-    ),
+    private readonly wildcards: WildcardInterface,
     private readonly cache: Cache<ResolvedRoute | null> = new MemoryCache()
   ) {
+    this.wildcards.segments = MAX_CONFIG_SEGMENTS;
     for (const k of Object.keys(this.cfg.routes)) {
       this.wildcards.validatePattern(k);
     }

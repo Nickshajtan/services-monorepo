@@ -1,12 +1,17 @@
 import { MemoryCache } from '@app/cache/MemoryCache';
 import { Cache } from '@app/cache/CacheInterface';
+import { WildcardInterface } from '@app/wildcards/contracts';
 
-export class WildcardKeyResolver {
+export class WildcardKeyResolver implements WildcardInterface {
   constructor(
     private readonly cache: Cache<string[]> = new MemoryCache(),
-    private readonly separator = '.',
-    private readonly maxSegments = 4,
+    private readonly separator: string = '.',
+    private maxSegments: number = 4,
   ) {}
+
+  set segments(value: number) {
+    this.maxSegments = value;
+  }
 
   /**
    * Returns keys in order of precedence:

@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { RouteResolver } from "@app/routes/RouteResolver";
 import type { AiConfigParsed } from "@config/AiConfigSchema";
+import { WildcardKeyResolver } from '@app/wildcards/WildcardKeyResolver';
+import { MemoryCache } from '@app/cache/MemoryCache';
 
 const cfg: AiConfigParsed = {
   defaults: { provider: "openai", model: "gpt-4.1-mini", temperature: 0.2 },
@@ -12,7 +14,10 @@ const cfg: AiConfigParsed = {
 };
 
 describe("RouteResolver", () => {
-  const resolver = new RouteResolver(cfg);
+  const resolver = new RouteResolver(
+    cfg,
+    new WildcardKeyResolver(new MemoryCache(), '.', 3)
+  );
 
   it("resolves existing route and applies defaults", () => {
     const r = resolver.resolve("devdocs.llm.query");
@@ -34,14 +39,17 @@ describe("RouteResolver", () => {
 });
 
 describe("RouteResolver wildcards", () => {
-  const resolver = new RouteResolver({
-    ...cfg,
-    routes: {
-      "*.*.*": { temperature: 0.3 },
-      "devdocs.llm.*": { instructions: "Be concise" },
-      ...cfg.routes
-    }
-  });
+  const resolver = new RouteResolver(
+    {
+      ...cfg,
+      routes: {
+        "*.*.*": { temperature: 0.3 },
+        "devdocs.llm.*": { instructions: "Be concise" },
+        ...cfg.routes
+      }
+    },
+    new WildcardKeyResolver(new MemoryCache(), '.', 3)
+  );
 
   it("merges global + wildcard + exact (exact wins)", () => {
     const r = resolver.resolve("devdocs.llm.query");

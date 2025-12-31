@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { WildcardKeyResolver } from '@app/WildcardKeyResolver';
+import { WildcardKeyResolver } from '@app/wildcards/WildcardKeyResolver';
 import type { Cache } from '@app/cache/CacheInterface';
 
 class TestCache<T> implements Cache<T> {
