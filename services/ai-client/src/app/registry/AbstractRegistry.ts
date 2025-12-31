@@ -39,7 +39,7 @@ export abstract class AbstractRegistry<TDef extends RegistrationDefenition> {
     return def.key;
   }
 
-  protected throw(message: string): void
+  protected throw(message: string): never
   {
     throw new Error(message);
   }

@@ -29,17 +29,12 @@ export class AppBuilder<S extends BuilderState = NoModules> {
     const registries = (new RegistryFactory()).create();
     const { domains, commands, providers } = registries;
     const context = { config: config, bus: appConfig.bus } satisfies ModuleContext;
-
-    const allModules = [...this.modulesByName.values()];
-    const enabledModules = allModules.filter(m => this.togglePolicy.isEnabled(m, context));
-    const sortedModules = this.topoSortWithPriority(enabledModules);
-    this.ensureDependenciesAreActive( sortedModules );
+    const sortedModules = this.resolveModules( context );
+    if ( sortedModules.length < 1 ) {
+      this.throw('No modules enabled');
+    }
 
     for (const module of sortedModules) {
-      if (!this.togglePolicy.isEnabled(module, context)) {
-        continue;
-      }
-
       module.registerDomains?.(domains, context);
       module.registerCommands?.(commands, context);
       module.registerProviders?.(providers, context);
@@ -69,18 +64,27 @@ export class AppBuilder<S extends BuilderState = NoModules> {
 
       this.modulesByName.set(module.name, module);
     }
-    return this;
+    return this as unknown as AppBuilder<HasModules>;
   }
 
-  protected ensureDependenciesAreActive(mods: AiModule[]): void {
-    const enabledNames = new Set(mods.map(m => m.name));
-    for (const m of mods) {
+  protected resolveModules(context: ModuleContext): AiModule[] {
+    const allModules = [...this.modulesByName.values()];
+    const allByName = new Map(allModules.map(m => [m.name, m] as const));
+    const enabledModules = allModules.filter(m => this.togglePolicy.isEnabled(m, context));
+    const enabledNames = new Set(enabledModules.map(m => m.name));
+
+    for (const m of enabledModules) {
       for (const dep of (m.dependsOn ?? [])) {
+        if (!allByName.has(dep)) {
+          this.throw(`Module "${m.name}" requires "${dep}", but it is not registered`);
+        }
         if (!enabledNames.has(dep)) {
-          throw new Error(`Module "${m.name}" requires "${dep}", but it's disabled/missing`);
+          this.throw(`Module "${m.name}" requires "${dep}", but it's disabled`);
         }
       }
     }
+
+    return this.topoSortWithPriority(enabledModules);
   }
 
   protected topoSortWithPriority(mods: AiModule[]): AiModule[] {
@@ -99,12 +103,12 @@ export class AppBuilder<S extends BuilderState = NoModules> {
       }
 
       if (temp.has(name)) {
-        throw new Error(`Cycle detected at: ${name}`);
+        this.throw(`Cycle detected at: ${name}`);
       }
 
-      const m = byName.get(name);
+      const m:AiModule | undefined = byName.get(name);
       if (!m) {
-        throw new Error(`Unknown module dependency: ${name}`);
+        this.throw( `Internal error: "${name}" not in enabled module graph` );
       }
 
       temp.add(name);
@@ -122,5 +126,10 @@ export class AppBuilder<S extends BuilderState = NoModules> {
     }
 
     return out;
+  }
+
+  protected throw(message: string): never
+  {
+    throw new Error(message);
   }
 }
