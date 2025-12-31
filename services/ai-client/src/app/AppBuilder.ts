@@ -4,7 +4,7 @@ import { AiConfigLoader } from '@config/AiConfigLoader';
 import { RouteResolver } from '@app/routes/RouteResolver';
 import { BuiltApp } from '@app/modularity/types';
 import { appConfig } from '@app/app';
-import { AiModule, ModuleContext, ModuleTogglePolicy } from '@app/modularity/contracts';
+import { AiModule, ModuleContext, ModuleTogglePolicy, ModuleResolutionPolicy } from '@app/modularity/contracts';
 import { WildcardKeyResolver } from '@app/wildcards/WildcardKeyResolver';
 import { MemoryCache } from '@app/cache/MemoryCache';
 
@@ -14,11 +14,17 @@ type HasModules = { modules: true };
 const AlwaysEnabledPolicy: ModuleTogglePolicy = {
   isEnabled: () => true,
 };
+const DefaultResolutionPolicy: ModuleResolutionPolicy = {
+  onEmpty(): never {
+    throw new Error('No modules enabled');
+  },
+};
 
 export class AppBuilder<S extends BuilderState = NoModules> {
   private configPath = 'config/ai.config.json';
   private modulesByName = new Map<string, AiModule>();
   private togglePolicy: ModuleTogglePolicy = AlwaysEnabledPolicy;
+  private resolutionPolicy: ModuleResolutionPolicy = DefaultResolutionPolicy;
 
   build(this: AppBuilder<HasModules>): BuiltApp {
     const config = new AiConfigLoader().load(this.configPath);
@@ -31,7 +37,7 @@ export class AppBuilder<S extends BuilderState = NoModules> {
     const context = { config: config, bus: appConfig.bus } satisfies ModuleContext;
     const sortedModules = this.resolveModules( context );
     if ( sortedModules.length < 1 ) {
-      this.throw('No modules enabled');
+      this.resolutionPolicy.onEmpty();
     }
 
     for (const module of sortedModules) {
@@ -53,6 +59,11 @@ export class AppBuilder<S extends BuilderState = NoModules> {
 
   withTogglePolicy(policy: ModuleTogglePolicy): AppBuilder<S> {
     this.togglePolicy = policy;
+    return this;
+  }
+
+  withResolutionPolicy(policy: ModuleResolutionPolicy): AppBuilder<S> {
+    this.resolutionPolicy = policy;
     return this;
   }
 

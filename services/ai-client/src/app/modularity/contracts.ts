@@ -31,3 +31,8 @@ export interface ModuleContext {
 export interface ModuleTogglePolicy {
   isEnabled(module: AiModule, ctx: ModuleContext): boolean;
 }
+
+export interface ModuleResolutionPolicy {
+  required?: string[];
+  onEmpty(): never | AiModule[];
+}
