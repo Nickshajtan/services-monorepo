@@ -1,5 +1,13 @@
 import type { RouteEntry } from '@config/AiConfigSchema';
 
+export type Registries = Record<string, any>;
+export type Logger = {
+  info(msg: string, meta?: any): void;
+  warn(msg: string, meta?: any): void;
+  error(msg: string, meta?: any): void;
+  debug?(msg: string, meta?: any): void;
+};
+
 export const Capabilities = {
   LLM: "llm",
   Image: "image",
